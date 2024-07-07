@@ -1,5 +1,7 @@
 ### Project Specific stuff
-test_run_dir/*
+ip_repo/VexRiscv_1_0/src/VexRiscvCore.v
+project
+
 ### XilinxISE template
 # intermediate build files
 *.bgn
