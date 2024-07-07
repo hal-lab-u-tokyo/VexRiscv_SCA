@@ -2,5 +2,5 @@
 	path = lib/VexRiscv
 	url = https://github.com/SpinalHDL/VexRiscv.git
 [submodule "lib/VexRiscV"]
-	path = lib/VexRiscV
+	path = lib/VexRiscv
 	url = https://github.com/SpinalHDL/VexRiscv.git
