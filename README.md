@@ -97,4 +97,5 @@ source <path to this repo>/vivado/create_bd.tcl
 After creating the block design, generate the bitstream by clicking the `Generate Bitstream` button in the Vivado GUI.
 
 
-
+# License
+This repository is licensed under the MIT license. See [LICENSE](./LICENSE) for details.
