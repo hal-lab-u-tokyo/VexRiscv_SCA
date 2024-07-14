@@ -4,3 +4,6 @@
 [submodule "lib/VexRiscV"]
 	path = lib/VexRiscv
 	url = https://github.com/SpinalHDL/VexRiscv.git
+[submodule "sakura-x-shell"]
+	path = sakura-x-shell
+	url = git@github.com:hal-lab-u-tokyo/sakura-x-shell.git

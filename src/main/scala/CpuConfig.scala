@@ -5,7 +5,7 @@
   * Project:       sakura-x-vexriscv
   * Author:        Takuya Kojima in The University of Tokyo (tkojima@hal.ipc.i.u-tokyo.ac.jp)
   * Created Date:  07-07-2024 19:59:38
-  * Last Modified: 07-07-2024 20:00:14
+  * Last Modified: 11-07-2024 17:03:58
  **/
 
 
@@ -20,7 +20,7 @@ object CpuConfig {
     val cpuConfig = VexRiscvConfig(
         plugins = List(
             new IBusCachedPlugin(
-                resetVector = 0xA0000000l,
+                resetVector = 0x80000000l,
                 prediction  = DYNAMIC_TARGET,
                 config      = InstructionCacheConfig(
                     cacheSize          = 4096,
@@ -49,9 +49,8 @@ object CpuConfig {
                     catchUnaligned   = false
                 )
             ),
-            new PmpPlugin(
-                regions = 16,
-                ioRange = _(31 downto 28) === 0xf
+            new StaticMemoryTranslatorPlugin( // Memory mapped IO, etc
+                ioRange      = _(31 downto 28) === 0xA
             ),
             new DecoderSimplePlugin(
                 catchIllegalInstruction = true

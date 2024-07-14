@@ -1,6 +1,12 @@
 ### Project Specific stuff
-ip_repo/VexRiscv_1_0/src/VexRiscvCore.v
+vivado/ip_repo/VexRiscv_Core_1_0/src/VexRiscvCore.v
 project
+
+### Vivado project
+sakura-x-vexriscv
+.Xil
+*.jou
+
 
 ### XilinxISE template
 # intermediate build files
