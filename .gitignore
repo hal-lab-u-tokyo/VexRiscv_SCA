@@ -12,6 +12,7 @@ sakura-x-vexriscv
 # intermediate build files
 *.bgn
 *.bit
+!bitstream/prebuilt.bit
 *.bld
 *.cmd_log
 *.drc
