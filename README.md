@@ -31,7 +31,7 @@ Total | 13788 (13.60%) | 15294 (7.54%) | 136 (41.85%) | 7 (1.17%)  |
 VexRiscv Core | 3828 (3.78%) | 3403 (1.68%)| 8 (2.46%) | 7 (1.18%) |
 
 # Included IPs
-## [VexRiscv_Core](./ip_repo/VexRiscv_Core_1_0/)
+## [VexRiscv_Core](./vivado/ip_repo/VexRiscv_Core_1_0/)
 This is a wrapper IP for the VexRiscv core, including the AXI4-Lite interface for core control.
 
 ### Address Map of control registers
@@ -40,7 +40,7 @@ This is a wrapper IP for the VexRiscv core, including the AXI4-Lite interface fo
 | `BASE` + 0x00 | start enable | Write 1 to start the core |
 | `BASE` + 0x04 | external interrupt enable | LSB is connected external interrupt signal of the core (not tested yet) |
 
-## [AXI LFSR](./ip_repo/axi_lfsr_1_0/)
+## [AXI LFSR](./vivado/ip_repo/axi_lfsr_1_0/)
 This provides a memory-mapped linear feedback shift register (LFSR) for pseudo-random number generation.
 | Address | Description | Note |
 |:-:|:-:|:-:|
@@ -48,7 +48,7 @@ This provides a memory-mapped linear feedback shift register (LFSR) for pseudo-r
 | `BASE` + 0x04 | LFSR output | 32-bit pseudo-random number |
 
 
-## [AXI Buffer](./ip_repo/axi_buffer_1_0/)
+## [AXI Buffer](./vivado/ip_repo/axi_buffer_1_0/)
 This is used for serial-like communication with Spartan-6 FPGA on the SAKURA-X board.
 
 | Address | Description | Note |
