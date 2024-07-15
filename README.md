@@ -7,8 +7,9 @@ In addition, prebuilt bitstreams are included, so you can use the hardware desig
 - Vivado 2023.2
 - Scala 2.11.12
 - sbt 1.6.0
-- [VexRiscv](https://github.com/SpinalHDL/VexRiscv) (automatically cloned by building tool)
+- [VexRiscv](https://github.com/SpinalHDL/VexRiscv) (included as a submodule)
 - [sakura-x-shell](https://github.com/hal-lab-u-tokyo/sakura-x-shell) (included as a submodule)
+
 
 # Configure your board
 You need to configure both Spartan-6 and Kintex-7 FPGAs on the SAKURA-X board.
@@ -95,6 +96,25 @@ source <path to this repo>/vivado/create_bd.tcl
 
 ## 4. Generate bitstream
 After creating the block design, generate the bitstream by clicking the `Generate Bitstream` button in the Vivado GUI.
+
+# Simple Test
+After configuring the FPGA with the bitstream, you can test the VexRiscv core by running the following command.
+
+Note that that python script needs [chipwhisperer](https://github.com/newaetech/chipwhisperer) and our [chipwhisperer-enhanced-plugins](https://github.com/hal-lab-u-tokyo/chipwhisperer-enhanced-plugins/) to be installed.
+
+```bash
+python3 test/test_hello_world.py <serial port path>
+```
+Expected output:
+```
+Loaded 3 segments
+boot start
+boot end
+Core start
+Received serial data
+Hello, World!
+
+```
 
 
 # License
