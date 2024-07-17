@@ -1,0 +1,76 @@
+/*
+ * 2024/07/07 created by Takuya Kojima
+ */
+
+OUTPUT_ARCH("riscv");
+OUTPUT_FORMAT("elf32-littleriscv");
+ENTRY("_start");
+
+PHDRS
+{
+	text	PT_LOAD;
+	rodata	PT_LOAD;
+	data	PT_LOAD;
+}
+
+MEMORY {
+	IMEM		(rx)	: ORIGIN = 0x80000000, LENGTH = 256K
+	DMEM		(rw)	: ORIGIN = 0x81000000, LENGTH = 256K
+}
+
+SECTIONS
+{
+
+	. = 0x80000000;
+	.text : ALIGN(64) {
+		_stext = . ;
+		start.o(.text)
+		. = 0x100;
+		_trap_handler = .;
+		ex_handler.o(.text)
+		*(.text)
+		*(.text.*)
+		. += 0x100;
+		_etext = . ;
+	} > IMEM : text
+
+	.rodata : ALIGN(64) {
+		_srodata = . ;
+		*(.strings)
+		*(.rodata)
+		*(.rodata.*)
+		. += 0x100;
+		_erodata = . ;
+	} > DMEM : rodata
+
+	.data : ALIGN(64) {
+		_sdata = . ;
+		*(.data)
+		*(.sdata)
+		. += 0x100;
+		_edata = . ;
+	} > DMEM : data
+
+	.bss : ALIGN(64) {
+		_sbss = . ;
+		*(.bss)
+		*(.sbss)
+		*(.scommon)
+		*(.COMMON)
+		. += 0x100;
+		_ebss = . ;
+	} > DMEM : data
+
+	_end = . ;
+
+	.kernelstack : ALIGN(64) {
+		. += 0x4000;	/* 16KB */
+		_kernelstack = . ;
+		. += 0x100; /* for cache line */
+	} > DMEM
+
+	. = (. + 0xfff) & 0xffffff00;	/* page boundary */
+	_kernelstackend = . ;
+
+}
+

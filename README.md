@@ -103,19 +103,72 @@ After configuring the FPGA with the bitstream, you can test the VexRiscv core by
 Note that that python script needs [chipwhisperer](https://github.com/newaetech/chipwhisperer) and our [chipwhisperer-enhanced-plugins](https://github.com/hal-lab-u-tokyo/chipwhisperer-enhanced-plugins/) to be installed.
 
 ```bash
-python3 test/test_hello_world.py <serial port path>
+python3 test/test_hello_world.py <serial port path> [--baudrate <baudrate>] [--timeout <timeout>]
 ```
+
+`<serial port path>` is the path to the serial port connected to the Kintex-7 FPGA.
+`--baudrate` and `--timeout` are optional arguments to specify the baudrate and end time of the test, respectively.
+
 Expected output:
 ```
-Loaded 3 segments
-boot start
-boot end
-Core start
-Received serial data
-Hello, World!
-
+[INFO] Loaded 3 segments
+[INFO] boot start
+[INFO] boot end
+[INFO] Core start
+Hello, World! 0
+Hello, World! 1
+Hello, World! 2
+Hello, World! 3
+Hello, World! 4
+Hello, World! 5
+Hello, World! 6
+Hello, World! 7
+Hello, World! 8
+Hello, World! 9
 ```
 
+# Application Development
+## Build and Install software development kit
+This repository includes a software development kit for VexRiscv on the SAKURA-X board with a simply implemented library.
+
+The following commands will build and install the SDK.
+The installation path can be specified with the `CMAKE_INSTALL_PREFIX` option.
+```
+mkdir build
+cmake [-DCMAKE_INSTALL_PREFIX=<install path>] <path to this repository>/sdk
+cmake --build .
+cmake --install .
+```
+
+## Create a new application
+Please create a c source file app_name.c and Makefile as follows.
+
+```Makefile
+.PHONY: all, clean
+all: app_name.elf
+
+clean:
+	-rm -f *.{o,elf,disasm}
+include  ${SDK_DIR}/etc/Makefile.common
+```
+
+`app_name` can be any name you like.
+
+### Compile options
+In the Makefile, you can specify the optimization level by adding the following line in the Makefile.
+```Makefile
+OPT_FLAGS = -O2
+```
+
+Likewise, you can specify the compiler flags by adding the following line in the Makefile.
+```Makefile
+EXTRA_CFLAGS = --foo --bar
+```
+
+If you have multiple source files, for example, `a.c` and `b.c`, you can add the following line in the Makefile.
+```Makefile
+EXTRA_OBJ = a.o b.o
+```
 
 # License
 This repository is licensed under the MIT license. See [LICENSE](./LICENSE) for details.
