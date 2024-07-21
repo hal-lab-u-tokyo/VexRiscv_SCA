@@ -5,7 +5,7 @@
 *    Project:       expr-riscv
 *    Author:        Takuya Kojima in The University of Tokyo (tkojima@hal.ipc.i.u-tokyo.ac.jp)
 *    Created Date:  07-12-2023 09:11:00
-*    Last Modified: 17-07-2024 21:32:59
+*    Last Modified: 21-07-2024 19:56:59
 */
 
 
@@ -25,7 +25,7 @@ unsigned int serial_recv()
 	return BUFFER->rx_data;
 }
 
-unsigned int available()
+unsigned int serial_available()
 {
 	return BUFFER->rx_status.count;
 }

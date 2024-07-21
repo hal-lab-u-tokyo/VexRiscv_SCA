@@ -5,7 +5,7 @@
 #   Project:       sakura-x-vexriscv
 #   Author:        Takuya Kojima in The University of Tokyo (tkojima@hal.ipc.i.u-tokyo.ac.jp)
 #   Created Date:  17-07-2024 22:25:09
-#   Last Modified: 17-07-2024 22:25:11
+#   Last Modified: 21-07-2024 20:13:40
 ###
 
 
@@ -22,8 +22,12 @@ PROGRAM_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), PROGRAM_
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument('serial', type=str)
-    parser.add_argument('--baudrate', type=int, default=115200)
-    parser.add_argument('--timeout', type=int, default=3)
+    parser.add_argument('--baudrate', type=int, default=115200, \
+                        help='baudrate of the serial communication')
+    parser.add_argument('--timeout', type=int, default=3, \
+                        help='end time of the test')
+    parser.add_argument('--program', type=str, default=PROGRAM_PATH, \
+                        help='path to the program to be run')
     return parser.parse_args()
 
 async def update(control):
@@ -44,7 +48,7 @@ def main():
     args = parse_args()
     ser = Serial(args.serial, args.baudrate)
 
-    control = SakuraXVexRISCVControlBase(ser, program = PROGRAM_PATH, verbose=True)
+    control = SakuraXVexRISCVControlBase(ser, program = args.program, verbose=True)
 
     asyncio.run(update_wrapper(control, args.timeout))
 
