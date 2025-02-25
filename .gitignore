@@ -3,7 +3,8 @@ vivado/ip_repo/VexRiscv_Core_1_0/src/VexRiscvCore.v
 project
 
 ### Vivado project
-sakura-x-vexriscv
+sakura-x-vexriscv_proj
+cw305-vexriscv_proj
 .Xil
 *.jou
 

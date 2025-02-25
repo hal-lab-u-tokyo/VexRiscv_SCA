@@ -1,7 +1,7 @@
-# VexRiscv SAKURA-X
-This repository helps your side-channel analysis research on the SAKURA-X board.
-It contains an FPGA design implementing the VexRiscv core on the SAKURA-X board, a software design kit for the core, and some IPs for the board.
-In addition, prebuilt bitstreams are included, so you can use the hardware design without building it.
+# VexRiscv SCA repository
+This repository contains FPGA implementations of the VexRiscv core on the SAKURA-X board and CW305 FPGA board, popular FPGAs for side-channel analysis.
+In addition, it includes a software development kit for the VexRiscv core, some fundamental IPs such as pseudo-random number generators and serial communication.
+Prebuilt bitstreams configured with default settings are also provided, so you can use the hardware design without building it.
 
 ## Prerequisites
 - Vivado 2023.2
@@ -9,15 +9,21 @@ In addition, prebuilt bitstreams are included, so you can use the hardware desig
 - sbt 1.6.0
 - [VexRiscv](https://github.com/SpinalHDL/VexRiscv) (included as a submodule)
 - [sakura-x-shell](https://github.com/hal-lab-u-tokyo/sakura-x-shell) (included as a submodule)
+- [cw305-shell](https://github.com/hal-lab-u-tokyo/sakura-x-shell) (included as a submodule)
 
 
-# Configure your board
+# Configure your boards
+## SAKURA-X board
 You need to configure both Spartan-6 and Kintex-7 FPGAs on the SAKURA-X board.
 Spartan-6 FPGA must be configured with the shell controller design, available in the [sakura-x-shell](https://github.com/hal-lab-u-tokyo/sakura-x-shell/).
 Please see the configuration steps in the [documentation](https://github.com/hal-lab-u-tokyo/sakura-x-shell?tab=readme-ov-file#project-for-spartan-6) of the shell repository.
 
 The Kintex-7 FPGA also needs to be configured with the prebuilt bitstream in this repository or your built bitstream.
 The following [documentation](https://github.com/hal-lab-u-tokyo/sakura-x-shell/blob/master/doc/config_mcs_vivado.md) will help you configure the Kintex-7 FPGA with Vivado.
+
+## CW305 FPGA board
+We also provide a ChipWhisperer extension to use this design.
+
 
 # Prebuilt Bitstream
 Prebuilt bitstream files are available in the [bitstream](./bitstream/) directory.
