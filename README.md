@@ -34,8 +34,8 @@ The block design uses 256KB block memory for instruction and data memory, respec
 
 || Slice LUTs | Slice Registers | BRAMs | DSPs |
 |:-:|:-:|:-:|:-:|:-:|
-Total | 13788 (13.60%) | 15294 (7.54%) | 136 (41.85%) | 7 (1.17%)  |
-VexRiscv Core | 3828 (3.78%) | 3403 (1.68%)| 8 (2.46%) | 7 (1.18%) |
+Total | 14911 (14.71%) | 16491 (8.13%) | 138 (42.46%) | 7 (1.17%)  |
+VexRiscv Core | 3962 (3.91%) | 3408 (1.68%)| 8 (2.46%) | 7 (1.17%) |
 
 # Included IPs
 ## [VexRiscv_Core](./vivado/ip_repo/VexRiscv_Core_1_0/)
@@ -87,7 +87,7 @@ Execute the following command to create a Vivado project.
 ```bash
 make init_vivado_project
 ```
-The default project name is `sakura-x-vexriscv`. If you want to change the project name, execute the following command.
+The default project name is `<board_name>-vexriscv`. If you want to change the project name, execute the following command.
 ```bash
 make VIVADO_PROJ_NAME=<your_project_name> init_vivado_project
 ```

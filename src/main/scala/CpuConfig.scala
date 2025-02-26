@@ -5,7 +5,7 @@
   * Project:       sakura-x-vexriscv
   * Author:        Takuya Kojima in The University of Tokyo (tkojima@hal.ipc.i.u-tokyo.ac.jp)
   * Created Date:  07-07-2024 19:59:38
-  * Last Modified: 11-07-2024 17:03:58
+  * Last Modified: 26-02-2025 08:17:14
  **/
 
 
@@ -24,7 +24,7 @@ object CpuConfig {
                 prediction  = DYNAMIC_TARGET,
                 config      = InstructionCacheConfig(
                     cacheSize          = 4096,
-                    bytePerLine        = 32,
+                    bytePerLine        = 64,
                     wayCount           = 1,
                     addressWidth       = 32,
                     cpuDataWidth       = 32,
@@ -39,7 +39,7 @@ object CpuConfig {
             new DBusCachedPlugin(
                 config = new DataCacheConfig(
                     cacheSize        = 4096,
-                    bytePerLine      = 32,
+                    bytePerLine      = 64,
                     wayCount         = 1,
                     addressWidth     = 32,
                     cpuDataWidth     = 32,

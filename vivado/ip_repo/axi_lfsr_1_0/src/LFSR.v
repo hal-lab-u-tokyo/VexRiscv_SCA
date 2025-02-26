@@ -5,9 +5,7 @@
 //    Project:       sakura-x-vexriscv
 //    Author:        Takuya Kojima in The University of Tokyo (tkojima@hal.ipc.i.u-tokyo.ac.jp)
 //    Created Date:  07-07-2024 21:13:48
-//    Last Modified: 14-07-2024 23:27:15
-/
-/
+//    Last Modified: 26-02-2025 09:41:50
 
 module LFSR #(
   parameter WIDTH = 32

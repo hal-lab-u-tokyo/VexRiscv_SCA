@@ -5,7 +5,7 @@
 #    Project:       sakura-x-vexriscv
 #    Author:        Takuya Kojima in The University of Tokyo (tkojima@hal.ipc.i.u-tokyo.ac.jp)
 #    Created Date:  07-07-2024 20:39:17
-#    Last Modified: 26-02-2025 07:37:49
+#    Last Modified: 27-02-2025 05:27:55
 #
 
 TARGET_BOARD ?= sakura-x
@@ -19,8 +19,11 @@ vivado/ip_repo/VexRiscv_Core_1_0/src/VexRiscvCore.v: $(wildcard src/main/scala/*
 	@echo "Generating VexRiscvCore.v to vivado/ip_repo/VexRiscv_Core_1_0/src"
 	sbt "runMain CoreGen -o vivado/ip_repo/VexRiscv_Core_1_0/src/"
 
+bootloader/boot.coe:
+	$(MAKE) -C bootloader
+
 .PHONY: init_vivado_project
-ip_repo: vivado/ip_repo/VexRiscv_Core_1_0/src/VexRiscvCore.v
+ip_repo: vivado/ip_repo/VexRiscv_Core_1_0/src/VexRiscvCore.v bootloader/boot.coe
 
 boards/sakura-x-shell:
 	git submodule update --init boards/sakura-x-shell
@@ -31,12 +34,12 @@ boards/cw305-shell:
 ifeq ($(TARGET_BOARD), sakura-x)
 init_vivado_project: ip_repo boards/sakura-x-shell
 	@echo "Initializing Vivado project"
-	vivado -source ./sakura-x-shell/vivado/init-shell-project.tcl \
+	vivado -source ./boards/sakura-x-shell/vivado/init-shell-project.tcl \
 		-tclargs --project-dir $(VIVADO_PROJ_NAME) --project-name $(VIVADO_PROJ_NAME)
 else ifeq ($(TARGET_BOARD), cw305)
 init_vivado_project: ip_repo boards/cw305-shell
 	@echo "Initializing Vivado project"
-	vivado -source ./cw305-shell/vivado/init-shell-project.tcl \
+	vivado -source ./baords/cw305-shell/vivado/init-shell-project.tcl \
 		-tclargs --project-dir $(VIVADO_PROJ_NAME) --project-name $(VIVADO_PROJ_NAME)
 else
 $(error "TARGET_BOARD must be sakura-x or cw305")

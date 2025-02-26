@@ -1,0 +1,46 @@
+/*
+ * 2025/02/25 created by Takuya Kojima
+ */
+
+OUTPUT_ARCH("riscv");
+OUTPUT_FORMAT("elf32-littleriscv");
+ENTRY("_zsbl_start");
+
+PHDRS
+{
+	text	PT_LOAD;
+	trap   PT_LOAD;
+	data	PT_LOAD;
+}
+
+SECTIONS
+{
+	. = 0x80000000;
+
+	.text : {
+		_stext = . ;
+		boot.o(.text)
+		*(.text.*)
+		*(.text)
+		. = ALIGN(64);
+	} : text = 0x13000000
+
+	.trap : {
+		_trap_handler = . ;
+		trap.o(.trap)
+	} : trap
+
+	. = 0x81000000;
+	_imem = . ;
+
+	. = 0x82000000;
+
+	.bss : {
+		*(.bss)
+		*(.sbss)
+	}
+
+	_kernelstack = 0x8203FFFF ;
+
+
+}

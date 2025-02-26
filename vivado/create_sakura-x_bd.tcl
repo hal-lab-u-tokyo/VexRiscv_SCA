@@ -30,7 +30,13 @@ update_ip_catalog -rebuild
 set constr_set [current_fileset -quiet -constrset]
 import_files -fileset $constr_set [file normalize [file join $scriptDir "gpio.xdc"]]
 
-
+# ROM COE file path
+set rom_file_path [file normalize [file join $scriptDir ".." "bootloader" "boot.coe"]]
+if { [file exists $rom_file_path] == 0 } {
+  set errMsg "ROM COE file not found at <$rom_file_path>."
+  common::send_gid_msg -ssname BD::TCL -id 2005 -severity "ERROR" $errMsg
+  return -code error $errMsg
+}
 
 # update block design
 set parentCell [get_bd_cells /]
@@ -93,10 +99,13 @@ set_property -dict [list \
 set axi_dmem_ctrl [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_bram_ctrl:4.1 axi_dmem_ctrl ]
 set_property CONFIG.SINGLE_PORT_BRAM {1} $axi_dmem_ctrl
 
-
 # Create instance: axi_imem_ctrl, and set properties
 set axi_imem_ctrl [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_bram_ctrl:4.1 axi_imem_ctrl ]
 set_property CONFIG.SINGLE_PORT_BRAM {1} $axi_imem_ctrl
+
+# Create instance: axi_rom_ctrl, and set properties
+set axi_rom_ctrl [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_bram_ctrl:4.1 axi_rom_ctrl ]
+set_property CONFIG.SINGLE_PORT_BRAM {1} $axi_rom_ctrl
 
 
 # Create instance: imem_gen, and set properties
@@ -105,14 +114,22 @@ set imem_gen [ create_bd_cell -type ip -vlnv xilinx.com:ip:blk_mem_gen:8.4 imem_
 # Create instance: dmem_gen, and set properties
 set dmem_gen [ create_bd_cell -type ip -vlnv xilinx.com:ip:blk_mem_gen:8.4 dmem_gen ]
 
+# Create instance: rom_gen, and set properties
+set rom_gen [ create_bd_cell -type ip -vlnv xilinx.com:ip:blk_mem_gen:8.4 rom_gen ]
+set_property -dict [list \
+  CONFIG.Coe_File $rom_file_path \
+  CONFIG.Load_Init_File {true} \
+  CONFIG.Memory_Type {Single_Port_ROM} \
+] $rom_gen
+
 # Create instance: VexRiscv_Core_0, and set properties
 set VexRiscv_Core_0 [ create_bd_cell -type ip -vlnv user.org:user:VexRiscv_Core:1.0 VexRiscv_Core_0 ]
 
 # Create instance: axi_smc_data, and set properties
 set axi_smc_data [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect:1.0 axi_smc_data ]
 set_property -dict [list \
-CONFIG.NUM_MI {5} \
-CONFIG.NUM_SI {2} \
+  CONFIG.NUM_MI {5} \
+  CONFIG.NUM_SI {2} \
 ] $axi_smc_data
 
 
@@ -121,7 +138,10 @@ set rst_pll_core [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.
 
 # Create instance: axi_smc_inst, and set properties
 set axi_smc_inst [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect:1.0 axi_smc_inst ]
-set_property CONFIG.NUM_SI {2} $axi_smc_inst
+set_property -dict [list \
+  CONFIG.NUM_MI {2} \
+  CONFIG.NUM_SI {2} \
+] $axi_smc_inst
 
 
 # Create instance: axi_buffer_0, and set properties
@@ -133,11 +153,11 @@ set axi_lfsr_0 [ create_bd_cell -type ip -vlnv tkojima.me:user:axi_lfsr:1.0 axi_
 # Create instance: axi_gpio_0, and set properties
 set axi_gpio_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 axi_gpio_0 ]
 set_property -dict [list \
-	CONFIG.C_ALL_INPUTS_2 {1} \
-	CONFIG.C_ALL_OUTPUTS {1} \
-	CONFIG.C_GPIO2_WIDTH {8} \
-	CONFIG.C_GPIO_WIDTH {10} \
-	CONFIG.C_IS_DUAL {1} \
+  CONFIG.C_ALL_INPUTS_2 {1} \
+  CONFIG.C_ALL_OUTPUTS {1} \
+  CONFIG.C_GPIO2_WIDTH {8} \
+  CONFIG.C_GPIO_WIDTH {10} \
+  CONFIG.C_IS_DUAL {1} \
 ] $axi_gpio_0
 
 # disconnect controller - LED
@@ -151,9 +171,11 @@ connect_bd_intf_net -intf_net VexRiscv_Core_0_M_DATA_AXI [get_bd_intf_pins VexRi
 connect_bd_intf_net -intf_net VexRiscv_Core_0_M_INST_AXI [get_bd_intf_pins VexRiscv_Core_0/M_INST_AXI] [get_bd_intf_pins axi_smc_inst/S00_AXI]
 connect_bd_intf_net -intf_net axi_dmem_ctrl_BRAM_PORTA [get_bd_intf_pins axi_dmem_ctrl/BRAM_PORTA] [get_bd_intf_pins dmem_gen/BRAM_PORTA]
 connect_bd_intf_net -intf_net axi_imem_ctrl_BRAM_PORTA [get_bd_intf_pins axi_imem_ctrl/BRAM_PORTA] [get_bd_intf_pins imem_gen/BRAM_PORTA]
-connect_bd_intf_net -intf_net axi_smc_1_M00_AXI [get_bd_intf_pins axi_smc_inst/M00_AXI] [get_bd_intf_pins axi_imem_ctrl/S_AXI]
-connect_bd_intf_net -intf_net axi_smc_M00_AXI [get_bd_intf_pins axi_smc_data/M00_AXI] [get_bd_intf_pins axi_dmem_ctrl/S_AXI]
-connect_bd_intf_net -intf_net axi_smc_M01_AXI [get_bd_intf_pins axi_smc_data/M01_AXI] [get_bd_intf_pins axi_led/S_AXI]
+connect_bd_intf_net -intf_net axi_rom_ctrl_BRAM_PORTA [get_bd_intf_pins axi_rom_ctrl/BRAM_PORTA] [get_bd_intf_pins rom_gen/BRAM_PORTA]
+connect_bd_intf_net -intf_net axi_smc_inst_M00_AXI [get_bd_intf_pins axi_smc_inst/M00_AXI] [get_bd_intf_pins axi_imem_ctrl/S_AXI]
+connect_bd_intf_net -intf_net axi_smc_inst_M01_AXI [get_bd_intf_pins axi_smc_inst/M01_AXI] [get_bd_intf_pins axi_rom_ctrl/S_AXI]
+connect_bd_intf_net -intf_net axi_smc_data_M00_AXI [get_bd_intf_pins axi_smc_data/M00_AXI] [get_bd_intf_pins axi_dmem_ctrl/S_AXI]
+connect_bd_intf_net -intf_net axi_smc_data_M01_AXI [get_bd_intf_pins axi_smc_data/M01_AXI] [get_bd_intf_pins axi_led/S_AXI]
 connect_bd_intf_net -intf_net axi_smc_data_M02_AXI [get_bd_intf_pins axi_smc_data/M02_AXI] [get_bd_intf_pins axi_buffer_0/S_AXI]
 connect_bd_intf_net -intf_net axi_smc_data_M03_AXI [get_bd_intf_pins axi_smc_data/M03_AXI] [get_bd_intf_pins axi_lfsr_0/S00_AXI]
 connect_bd_intf_net -intf_net axi_smc_data_M04_AXI [get_bd_intf_pins axi_smc_data/M04_AXI] [get_bd_intf_pins axi_gpio_0/S_AXI]
@@ -169,9 +191,9 @@ connect_bd_net -net axi_gpio_0_gpio_io_o [get_bd_pins axi_gpio_0/gpio_io_o] [get
 
 connect_bd_net -net k_dipsw_1 [get_bd_ports k_dipsw] [get_bd_pins axi_gpio_0/gpio2_io_i]
 
-connect_bd_net -net pll_clk_out2 [get_bd_pins pll/clk_out2] [get_bd_pins VexRiscv_Core_0/m_inst_axi_aclk] [get_bd_pins VexRiscv_Core_0/m_data_axi_aclk] [get_bd_pins axi_smc_data/aclk] [get_bd_pins rst_pll_core/slowest_sync_clk] [get_bd_pins axi_dmem_ctrl/s_axi_aclk] [get_bd_pins axi_smc_inst/aclk] [get_bd_pins axi_imem_ctrl/s_axi_aclk] [get_bd_pins axi_led/s_axi_aclk] [get_bd_pins controller_AXI_0_axi_periph/M01_ACLK] [get_bd_pins controller_AXI_0_axi_periph/M02_ACLK] [get_bd_pins axi_buffer_0/s_axi_aclk] [get_bd_pins axi_lfsr_0/s00_axi_aclk] [get_bd_pins axi_gpio_0/s_axi_aclk]
+connect_bd_net -net pll_clk_out2 [get_bd_pins pll/clk_out2] [get_bd_pins VexRiscv_Core_0/m_inst_axi_aclk] [get_bd_pins VexRiscv_Core_0/m_data_axi_aclk] [get_bd_pins axi_smc_data/aclk] [get_bd_pins rst_pll_core/slowest_sync_clk] [get_bd_pins axi_dmem_ctrl/s_axi_aclk] [get_bd_pins axi_smc_inst/aclk] [get_bd_pins axi_imem_ctrl/s_axi_aclk] [get_bd_pins axi_rom_ctrl/s_axi_aclk] [get_bd_pins axi_led/s_axi_aclk] [get_bd_pins controller_AXI_0_axi_periph/M01_ACLK] [get_bd_pins controller_AXI_0_axi_periph/M02_ACLK] [get_bd_pins axi_buffer_0/s_axi_aclk] [get_bd_pins axi_lfsr_0/s00_axi_aclk] [get_bd_pins axi_gpio_0/s_axi_aclk]
 
-connect_bd_net -net rst_pll_core_peripheral_aresetn [get_bd_pins rst_pll_core/peripheral_aresetn] [get_bd_pins VexRiscv_Core_0/m_data_axi_aresetn] [get_bd_pins axi_dmem_ctrl/s_axi_aresetn] [get_bd_pins axi_smc_data/aresetn] [get_bd_pins VexRiscv_Core_0/m_inst_axi_aresetn] [get_bd_pins axi_imem_ctrl/s_axi_aresetn] [get_bd_pins axi_smc_inst/aresetn] [get_bd_pins axi_led/s_axi_aresetn] [get_bd_pins controller_AXI_0_axi_periph/M01_ARESETN] [get_bd_pins controller_AXI_0_axi_periph/M02_ARESETN] [get_bd_pins axi_buffer_0/s_axi_aresetn] [get_bd_pins axi_lfsr_0/s00_axi_aresetn] [get_bd_pins axi_gpio_0/s_axi_aresetn]
+connect_bd_net -net rst_pll_core_peripheral_aresetn [get_bd_pins rst_pll_core/peripheral_aresetn] [get_bd_pins VexRiscv_Core_0/m_data_axi_aresetn] [get_bd_pins axi_dmem_ctrl/s_axi_aresetn] [get_bd_pins axi_smc_data/aresetn] [get_bd_pins VexRiscv_Core_0/m_inst_axi_aresetn] [get_bd_pins axi_imem_ctrl/s_axi_aresetn] [get_bd_pins axi_rom_ctrl/s_axi_aresetn] [get_bd_pins axi_smc_inst/aresetn] [get_bd_pins axi_led/s_axi_aresetn] [get_bd_pins controller_AXI_0_axi_periph/M01_ARESETN] [get_bd_pins controller_AXI_0_axi_periph/M02_ARESETN] [get_bd_pins axi_buffer_0/s_axi_aresetn] [get_bd_pins axi_lfsr_0/s00_axi_aresetn] [get_bd_pins axi_gpio_0/s_axi_aresetn]
 
 # connecting existing nets
 connect_bd_net [get_bd_pins pll/clk_out1] [get_bd_pins VexRiscv_Core_0/s_ctrl_axi_aclk]
@@ -185,17 +207,18 @@ connect_bd_net [get_bd_pins rst_pll_100M/peripheral_aresetn] [get_bd_pins VexRis
 # Create address segments
 assign_bd_address -offset 0x40000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces controller_AXI_0/M_AXI] [get_bd_addr_segs VexRiscv_Core_0/S_CTRL_AXI/S_CTRL_AXI_reg] -force
 assign_bd_address -offset 0xA2000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces controller_AXI_0/M_AXI] [get_bd_addr_segs axi_buffer_0/S_AXI/S_AXI_reg] -force
-assign_bd_address -offset 0x81000000 -range 0x00040000 -target_address_space [get_bd_addr_spaces controller_AXI_0/M_AXI] [get_bd_addr_segs axi_dmem_ctrl/S_AXI/Mem0] -force
+assign_bd_address -offset 0x82000000 -range 0x00040000 -target_address_space [get_bd_addr_spaces controller_AXI_0/M_AXI] [get_bd_addr_segs axi_dmem_ctrl/S_AXI/Mem0] -force
 assign_bd_address -offset 0xA1000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces controller_AXI_0/M_AXI] [get_bd_addr_segs axi_gpio_0/S_AXI/Reg] -force
-assign_bd_address -offset 0x80000000 -range 0x00040000 -target_address_space [get_bd_addr_spaces controller_AXI_0/M_AXI] [get_bd_addr_segs axi_imem_ctrl/S_AXI/Mem0] -force
+assign_bd_address -offset 0x81000000 -range 0x00040000 -target_address_space [get_bd_addr_spaces controller_AXI_0/M_AXI] [get_bd_addr_segs axi_imem_ctrl/S_AXI/Mem0] -force
 assign_bd_address -offset 0xA0000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces controller_AXI_0/M_AXI] [get_bd_addr_segs axi_led/S_AXI/Reg] -force
 assign_bd_address -offset 0xA3000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces controller_AXI_0/M_AXI] [get_bd_addr_segs axi_lfsr_0/S00_AXI/S00_AXI_reg] -force
 assign_bd_address -offset 0xA2000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces VexRiscv_Core_0/M_DATA_AXI] [get_bd_addr_segs axi_buffer_0/S_AXI/S_AXI_reg] -force
-assign_bd_address -offset 0x81000000 -range 0x00040000 -target_address_space [get_bd_addr_spaces VexRiscv_Core_0/M_DATA_AXI] [get_bd_addr_segs axi_dmem_ctrl/S_AXI/Mem0] -force
+assign_bd_address -offset 0x82000000 -range 0x00040000 -target_address_space [get_bd_addr_spaces VexRiscv_Core_0/M_DATA_AXI] [get_bd_addr_segs axi_dmem_ctrl/S_AXI/Mem0] -force
 assign_bd_address -offset 0xA1000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces VexRiscv_Core_0/M_DATA_AXI] [get_bd_addr_segs axi_gpio_0/S_AXI/Reg] -force
 assign_bd_address -offset 0xA0000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces VexRiscv_Core_0/M_DATA_AXI] [get_bd_addr_segs axi_led/S_AXI/Reg] -force
 assign_bd_address -offset 0xA3000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces VexRiscv_Core_0/M_DATA_AXI] [get_bd_addr_segs axi_lfsr_0/S00_AXI/S00_AXI_reg] -force
-assign_bd_address -offset 0x80000000 -range 0x00040000 -target_address_space [get_bd_addr_spaces VexRiscv_Core_0/M_INST_AXI] [get_bd_addr_segs axi_imem_ctrl/S_AXI/Mem0] -force
+assign_bd_address -offset 0x80000000 -range 0x00002000 -target_address_space [get_bd_addr_spaces VexRiscv_Core_0/M_INST_AXI] [get_bd_addr_segs axi_rom_ctrl/S_AXI/Mem0] -force
+assign_bd_address -offset 0x81000000 -range 0x00040000 -target_address_space [get_bd_addr_spaces VexRiscv_Core_0/M_INST_AXI] [get_bd_addr_segs axi_imem_ctrl/S_AXI/Mem0] -force
 
 
 # Restore current instance
