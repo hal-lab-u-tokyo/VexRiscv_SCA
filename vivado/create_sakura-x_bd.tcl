@@ -28,7 +28,7 @@ update_ip_catalog -rebuild
 
 # add extra constraints
 set constr_set [current_fileset -quiet -constrset]
-import_files -fileset $constr_set [file normalize [file join $scriptDir "gpio.xdc"]]
+import_files -fileset $constr_set [file normalize [file join $scriptDir "gpio_sakura-x.xdc"]]
 
 # ROM COE file path
 set rom_file_path [file normalize [file join $scriptDir ".." "bootloader" "boot.coe"]]
@@ -171,7 +171,7 @@ connect_bd_intf_net -intf_net VexRiscv_Core_0_M_DATA_AXI [get_bd_intf_pins VexRi
 connect_bd_intf_net -intf_net VexRiscv_Core_0_M_INST_AXI [get_bd_intf_pins VexRiscv_Core_0/M_INST_AXI] [get_bd_intf_pins axi_smc_inst/S00_AXI]
 connect_bd_intf_net -intf_net axi_dmem_ctrl_BRAM_PORTA [get_bd_intf_pins axi_dmem_ctrl/BRAM_PORTA] [get_bd_intf_pins dmem_gen/BRAM_PORTA]
 connect_bd_intf_net -intf_net axi_imem_ctrl_BRAM_PORTA [get_bd_intf_pins axi_imem_ctrl/BRAM_PORTA] [get_bd_intf_pins imem_gen/BRAM_PORTA]
-connect_bd_intf_net -intf_net axi_rom_ctrl_BRAM_PORTA [get_bd_intf_pins axi_rom_ctrl/BRAM_PORTA] [get_bd_intf_pins rom_gen/BRAM_PORTA]
+connect_bd_intf_net -intf_net axi_rom_ctrl_BRAM_PORTA [get_bd_intf_pins ai_rom_ctrl/BRAM_PORTA] [get_bd_intf_pins rom_gen/BRAM_PORTA]
 connect_bd_intf_net -intf_net axi_smc_inst_M00_AXI [get_bd_intf_pins axi_smc_inst/M00_AXI] [get_bd_intf_pins axi_imem_ctrl/S_AXI]
 connect_bd_intf_net -intf_net axi_smc_inst_M01_AXI [get_bd_intf_pins axi_smc_inst/M01_AXI] [get_bd_intf_pins axi_rom_ctrl/S_AXI]
 connect_bd_intf_net -intf_net axi_smc_data_M00_AXI [get_bd_intf_pins axi_smc_data/M00_AXI] [get_bd_intf_pins axi_dmem_ctrl/S_AXI]

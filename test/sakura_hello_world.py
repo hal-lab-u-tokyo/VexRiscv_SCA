@@ -5,7 +5,7 @@
 #   Project:       sakura-x-vexriscv
 #   Author:        Takuya Kojima in The University of Tokyo (tkojima@hal.ipc.i.u-tokyo.ac.jp)
 #   Created Date:  17-07-2024 22:25:09
-#   Last Modified: 21-07-2024 20:13:40
+#   Last Modified: 27-02-2025 17:20:16
 ###
 
 
@@ -28,6 +28,8 @@ def parse_args():
                         help='end time of the test')
     parser.add_argument('--program', type=str, default=PROGRAM_PATH, \
                         help='path to the program to be run')
+    parser.add_argument("--hwh_file", type=str, \
+                        help='path to the hwh file')
     return parser.parse_args()
 
 async def update(control):
@@ -48,7 +50,9 @@ def main():
     args = parse_args()
     ser = Serial(args.serial, args.baudrate)
 
-    control = SakuraXVexRISCVControlBase(ser, program = args.program, verbose=True)
+    control = SakuraXVexRISCVControlBase(ser, program = args.program, \
+                                         hwh_file = args.hwh_file,
+                                         verbose=True)
 
     asyncio.run(update_wrapper(control, args.timeout))
 

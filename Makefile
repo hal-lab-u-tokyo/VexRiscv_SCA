@@ -5,7 +5,7 @@
 #    Project:       sakura-x-vexriscv
 #    Author:        Takuya Kojima in The University of Tokyo (tkojima@hal.ipc.i.u-tokyo.ac.jp)
 #    Created Date:  07-07-2024 20:39:17
-#    Last Modified: 27-02-2025 05:27:55
+#    Last Modified: 27-02-2025 06:29:35
 #
 
 TARGET_BOARD ?= sakura-x
@@ -39,7 +39,7 @@ init_vivado_project: ip_repo boards/sakura-x-shell
 else ifeq ($(TARGET_BOARD), cw305)
 init_vivado_project: ip_repo boards/cw305-shell
 	@echo "Initializing Vivado project"
-	vivado -source ./baords/cw305-shell/vivado/init-shell-project.tcl \
+	vivado -source ./boards/cw305-shell/vivado/init-shell-project.tcl \
 		-tclargs --project-dir $(VIVADO_PROJ_NAME) --project-name $(VIVADO_PROJ_NAME)
 else
 $(error "TARGET_BOARD must be sakura-x or cw305")

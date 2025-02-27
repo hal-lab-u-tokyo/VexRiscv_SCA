@@ -30,12 +30,27 @@ Prebuilt bitstream files are available in the [bitstream](./bitstream/) director
 
 ## Resource Usage
 The following implementation results are obtained with Vivado 2023.2, specifying the [default configuration](./src/main/scala/CpuConfig.scala) and 100MHz clock frequency for the VexRiscv core.
-The block design uses 256KB block memory for instruction and data memory, respectively.
 
+### SAKURA-X board
+* Default memory configuration:
+	* ROM: 8KB
+	* Instruction memory: 256KB
+	* Data memory: 256KB
 || Slice LUTs | Slice Registers | BRAMs | DSPs |
 |:-:|:-:|:-:|:-:|:-:|
 Total | 14911 (14.71%) | 16491 (8.13%) | 138 (42.46%) | 7 (1.17%)  |
 VexRiscv Core | 3962 (3.91%) | 3408 (1.68%)| 8 (2.46%) | 7 (1.17%) |
+
+### CW305 FPGA board
+* Default memory configuration:
+	* ROM: 8KB
+	* Instruction memory: 128KB
+	* Data memory: 256KB
+|| Slice LUTs | Slice Registers | BRAMs | DSPs |
+|:-:|:-:|:-:|:-:|:-:|
+Total | 14403 (22.72%) | 16556 (13.06%) | 106 (78.52%) | 7 (2.92%)  |
+VexRiscv Core | 3962 (6.25%) | 3408 (2.69%)| 8 (5.93%) | 7 (2.92%) |
+
 
 # Included IPs
 ## [VexRiscv_Core](./vivado/ip_repo/VexRiscv_Core_1_0/)
@@ -56,7 +71,7 @@ This provides a memory-mapped linear feedback shift register (LFSR) for pseudo-r
 
 
 ## [AXI Buffer](./vivado/ip_repo/axi_buffer_1_0/)
-This is used for serial-like communication with Spartan-6 FPGA on the SAKURA-X board.
+This is used for serial-like communication between the FPGA and the host PC.
 
 | Address | Description | Note |
 |:-:|:-:|:-:|
