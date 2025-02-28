@@ -9,7 +9,7 @@ Prebuilt bitstreams configured with default settings are also provided, so you c
 - sbt 1.6.0
 - [VexRiscv](https://github.com/SpinalHDL/VexRiscv) (included as a submodule)
 - [sakura-x-shell](https://github.com/hal-lab-u-tokyo/sakura-x-shell) (included as a submodule)
-- [cw305-shell](https://github.com/hal-lab-u-tokyo/sakura-x-shell) (included as a submodule)
+- [cw305-shell](https://github.com/hal-lab-u-tokyo/cw305-shell) (included as a submodule)
 
 
 # Configure your boards
@@ -22,11 +22,21 @@ The Kintex-7 FPGA also needs to be configured with the prebuilt bitstream in thi
 The following [documentation](https://github.com/hal-lab-u-tokyo/sakura-x-shell/blob/master/doc/config_mcs_vivado.md) will help you configure the Kintex-7 FPGA with Vivado.
 
 ## CW305 FPGA board
-We also provide a ChipWhisperer extension to use this design.
-
+Regarding the CW305 FPGA, ChipWhisperer API provides a way to configure the FPGA at runtime.
+The design for that board is based on our shell template [cw305-shell](https://github.com/hal-lab-u-tokyo/cw305-shell).
+We also provide a ChipWhisperer extension to use the CW305 FPGA with the VexRiscv core.
 
 # Prebuilt Bitstream
 Prebuilt bitstream files are available in the [bitstream](./bitstream/) directory.
+Provide files are as follows:
+
+* For SAKURA-X board:
+	* prebuilt_sakura-x.bit: Bitstream file
+	* prebuilt_sakura-x.mcs: MCS file for the onboard flash memory
+	* prebuilt_sakura-x.hwh: Hardware handoff file to tell the software the address map
+* For CW305 FPGA board:
+	* prebuilt_cw305.bit: Bitstream file
+	* prebuilt_cw305.hwh: Hardware handoff file to tell the software the address map
 
 ## Resource Usage
 The following implementation results are obtained with Vivado 2023.2, specifying the [default configuration](./src/main/scala/CpuConfig.scala) and 100MHz clock frequency for the VexRiscv core.
@@ -36,6 +46,7 @@ The following implementation results are obtained with Vivado 2023.2, specifying
 	* ROM: 8KB
 	* Instruction memory: 256KB
 	* Data memory: 256KB
+
 || Slice LUTs | Slice Registers | BRAMs | DSPs |
 |:-:|:-:|:-:|:-:|:-:|
 Total | 14911 (14.71%) | 16491 (8.13%) | 138 (42.46%) | 7 (1.17%)  |
@@ -46,6 +57,7 @@ VexRiscv Core | 3962 (3.91%) | 3408 (1.68%)| 8 (2.46%) | 7 (1.17%) |
 	* ROM: 8KB
 	* Instruction memory: 128KB
 	* Data memory: 256KB
+
 || Slice LUTs | Slice Registers | BRAMs | DSPs |
 |:-:|:-:|:-:|:-:|:-:|
 Total | 14403 (22.72%) | 16556 (13.06%) | 106 (78.52%) | 7 (2.92%)  |
@@ -88,7 +100,18 @@ Both `tx_status` and `rx_status` are 32-bit registers as formatted below:
 
 The `Full` and `Empty` bits are set when the buffer is full or empty, respectively.
 
+# Bootloader
+The reset vector of the VexRiscv core is set to the address of the bootloader
+and the bootloader is mapped to the ROM address space.
+The default bootloader [src](./bootloader/) assumes the host PC initializes the RAM with the application binary.
+Therefore, the bootloader just jumps to the head of the instruction memory after the reset.
+You can boot the core with a different method, e.g., loading the program from a flash memory by modifying the bootloader src.
+To build the bootloader as described below, SDK setup in [Application Development](#application-development) section is required.
+
 # Building the Design
+This repository provides a Makefile to generate the VexRiscv core and create an initial Vivado project.
+The default target board is SAKURA-X, but you can change the target board to CW305 by specifying the `TARGET_BOARD` variable in the Makefile or command line.
+
 ## 1. Core generation
 First, you need to generate the VexRiscv core.
 Execute the following command in the root directory of this repository.
@@ -96,13 +119,14 @@ Execute the following command in the root directory of this repository.
 make ip_core
 ```
 It will automatically clone the VexRiscv repository and generate the core according to the configuration in [CpuConfig.scala](./src/main/scala/CpuConfig.scala).
+In addition, it will make a bootloader for ROM initialization (if necessary).
 
 ## 2. Create a Vivado project
 Execute the following command to create a Vivado project.
 ```bash
 make init_vivado_project
 ```
-The default project name is `<board_name>-vexriscv`. If you want to change the project name, execute the following command.
+The default project name is `<TARGET_BOARD>-vexriscv`. If you want to change the project name, execute the following command.
 ```bash
 make VIVADO_PROJ_NAME=<your_project_name> init_vivado_project
 ```
@@ -112,23 +136,42 @@ After executing the command, vivado will be launched with a template block desig
 ## 3. Create block design
 In the Vivado Tcl console, execute the following command to create a block design.
 ```tcl
-source <path to this repo>/vivado/create_bd.tcl
+# for SAKURA-X board
+source <path to this repo>/vivado/create_bd_sakura-x.tcl
+# for CW305 board
+source <path to this repo>/vivado/create_bd_cw305.tcl
 ```
 
 ## 4. Generate bitstream
 After creating the block design, generate the bitstream by clicking the `Generate Bitstream` button in the Vivado GUI.
 
 # Simple Test
-After configuring the FPGA with the bitstream, you can test the VexRiscv core by running the following command.
+After configuring the FPGA with the bitstream, you can test the VexRiscv core with each runner script.
 
 Note that that python script needs [chipwhisperer](https://github.com/newaetech/chipwhisperer) and our [chipwhisperer-enhanced-plugins](https://github.com/hal-lab-u-tokyo/chipwhisperer-enhanced-plugins/) to be installed.
 
+
+## For SAKURA-X board
+
 ```bash
-python3 test/test_hello_world.py <serial port path> [--baudrate <baudrate>] [--timeout <timeout>]
+python3 test/sakura_hello_world.py <serial port path> [--baudrate <baudrate>]
 ```
 
-`<serial port path>` is the path to the serial port connected to the Kintex-7 FPGA.
-`--baudrate` and `--timeout` are optional arguments to specify the baudrate and end time of the test, respectively.
+* `<serial port path>` is the path to the serial port connected to the Kintex-7 FPGA.
+* `--baudrate <baudrate>`: Specify the baudrate of the serial communication. The default value is 115200.
+
+## For CW305 FPGA board
+
+```bash
+python3 test/cw305_hello_world.py <bitstream file> 
+```
+
+* `<bitstream file>` is the path to the bitstream file for the CW305 FPGA.
+
+## Common options for both runner scripts
+* `--program <program file>`: Specify the program file to be loaded into the memory. The default program is `test/hello_world.elf`.
+* `--timeout <timeout>`: Specify the end time of the test. The default value is 3 seconds.
+* `--hwh-file <hwh file>`: Specify the hardware handoff file. If this option is not specified, the default address map is used.
 
 Expected output:
 ```
