@@ -169,7 +169,7 @@ python3 test/cw305_hello_world.py <bitstream file>
 * `<bitstream file>` is the path to the bitstream file for the CW305 FPGA.
 
 ## Common options for both runner scripts
-* `--program <program file>`: Specify the program file to be loaded into the memory. The default program is `test/hello_world.elf`.
+* `--program <program file>`: Specify the program file to be loaded into the memory. The default program is `test/hello.<target_board>.elf`.
 * `--timeout <timeout>`: Specify the end time of the test. The default value is 3 seconds.
 * `--hwh-file <hwh file>`: Specify the hardware handoff file. If this option is not specified, the default address map is used.
 
@@ -196,13 +196,17 @@ Hello, World! 9
 This repository includes a software development kit for VexRiscv on the SAKURA-X board with a simply implemented library.
 
 The following commands will build and install the SDK.
-The installation path can be specified with the `CMAKE_INSTALL_PREFIX` option.
 ```
 mkdir build
-cmake [-DCMAKE_INSTALL_PREFIX=<install path>] <path to this repository>/sdk
+cmake [-DCMAKE_INSTALL_PREFIX=<install path>] [-DSDK_BUILD_TARGET=<TARGET>] <path to this repository>/sdk
 cmake --build .
 cmake --install .
 ```
+
+The installation path can be specified with the `CMAKE_INSTALL_PREFIX` option.
+
+The `SDK_BUILD_TARGET` option specifies the target board for the SDK. The default value is `SAKURA-X`. If you want to build the SDK for the CW305 board, specify `CW305` as the value.
+
 
 ## Create a new application
 Please create a c source file app_name.c and Makefile as follows.
