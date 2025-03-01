@@ -5,7 +5,7 @@
 *    Project:       expr-riscv
 *    Author:        Takuya Kojima in The University of Tokyo (tkojima@hal.ipc.i.u-tokyo.ac.jp)
 *    Created Date:  07-12-2023 08:51:43
-*    Last Modified: 17-07-2024 21:53:26
+*    Last Modified: 01-03-2025 17:44:54
 */
 
 #define LED_BASE_ADDR		0xA0000000
@@ -13,20 +13,73 @@
 #define BUFFER_BASE_ADDR	0xA2000000
 #define LFSR_BASE_ADDR		0xA3000000
 
-// 10bit LED
+#define BIT_FIELDS_10 \
+    X(0)  \
+    X(1)  \
+    X(2)  \
+    X(3)  \
+    X(4)  \
+    X(5)  \
+    X(6)  \
+    X(7)  \
+    X(8)  \
+    X(9)
+
+#define BIT_FIELDS_12 \
+    X(0)  \
+    X(1)  \
+    X(2)  \
+    X(3)  \
+    X(4)  \
+    X(5)  \
+    X(6)  \
+    X(7)  \
+    X(8)  \
+    X(9)  \
+	X(10) \
+	X(11)
+
+#define BIT_FIELDS_8 \
+	X(0)  \
+	X(1)  \
+	X(2)  \
+	X(3)  \
+	X(4)  \
+	X(5)  \
+	X(6)  \
+	X(7)
+
+#define BIT_FIELDS_4 \
+	X(0)  \
+	X(1)  \
+	X(2)  \
+	X(3)
+
+#define BIT_FIELDS_3 \
+	X(0)  \
+	X(1)  \
+	X(2)
+
+
+#if defined(__SAKURA_X_TARGET__)
+#define LED_COUNT 10
+#elif defined(__CW305_TARGET__)
+#define LED_COUNT 3
+#else
+#error "Target board is not defined or unknown"
+#endif
+
+// 10bit LED or 4bit LED
 typedef union
 {
 	struct {
-		unsigned int led0:	1;
-		unsigned int led1:	1;
-		unsigned int led2:	1;
-		unsigned int led3:	1;
-		unsigned int led4:	1;
-		unsigned int led5:	1;
-		unsigned int led6:	1;
-		unsigned int led7:	1;
-		unsigned int led8:	1;
-		unsigned int led9:	1;
+		#define X(n) unsigned int led##n : 1;
+		#if defined(__SAKURA_X_TARGET__)
+		BIT_FIELDS_10
+		#elif defined(__CW305_TARGET__)
+		BIT_FIELDS_3
+		#endif
+		#undef X
 	} __attribute__((__packed__)) bits;
 	unsigned int data;
 } led_ctrl_t;
@@ -35,41 +88,39 @@ typedef union
 
 #define LED ((volatile led_ctrl_t*)LED_BASE_ADDR)
 
+
 // Xilinx AXI GPIO IP
 typedef struct {
-	// unsigned int gpio_data;		// output only (k_header)
+	// output only (header pin)
 	union {
 		struct {
-			unsigned int out0:	1;
-			unsigned int out1:	1;
-			unsigned int out2:	1;
-			unsigned int out3:	1;
-			unsigned int out4:	1;
-			unsigned int out5:	1;
-			unsigned int out6:	1;
-			unsigned int out7:	1;
-			unsigned int out8:	1;
-			unsigned int out9:	1;
+			#define X(n) unsigned int out##n : 1;
+			#if defined(__SAKURA_X_TARGET__)
+			BIT_FIELDS_10
+			#elif defined(__CW305_TARGET__)
+			BIT_FIELDS_12
+			#endif
+			#undef X
 		} __attribute__((__packed__)) bits;
 		unsigned int data;
 	} gpio_out_data;
 	unsigned int gpio_tri;		// not used in this design
-	// input only (k_dipsw)
+	// input only (dip switch)
 	union {
 		struct {
-			unsigned int in0:	1;
-			unsigned int in1:	1;
-			unsigned int in2:	1;
-			unsigned int in3:	1;
-			unsigned int in4:	1;
-			unsigned int in5:	1;
-			unsigned int in6:	1;
-			unsigned int in7:	1;
+			#define X(n) unsigned int in##n : 1;
+			#if defined(__SAKURA_X_TARGET__)
+			BIT_FIELDS_8
+			#elif defined(__CW305_TARGET__)
+			BIT_FIELDS_4
+			#endif
+			#undef X
 		} __attribute__((__packed__)) bits;
 		unsigned int data;
 	} gpio_in_data;
 	unsigned int gpio2_tri;		// not used in this design
 } __attribute__((__packed__)) gpio_ctrl_t;
+
 
 #define GPIO ((volatile gpio_ctrl_t*)GPIO_BASE_ADDR)
 

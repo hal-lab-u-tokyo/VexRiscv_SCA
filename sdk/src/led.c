@@ -5,52 +5,41 @@
 *    Project:       sakura-x-vexriscv
 *    Author:        Takuya Kojima in The University of Tokyo (tkojima@hal.ipc.i.u-tokyo.ac.jp)
 *    Created Date:  17-07-2024 21:39:54
-*    Last Modified: 17-07-2024 21:47:36
+*    Last Modified: 01-03-2025 17:39:27
 */
 
 
 #include <minilib.h>
 #include <iodef.h>
 
-void led_on(int pos)
+inline void led_set(int pos, int val)
 {
 	switch(pos) {
-		case 0: LED->bits.led0 = 1; break;
-		case 1: LED->bits.led1 = 1; break;
-		case 2: LED->bits.led2 = 1; break;
-		case 3: LED->bits.led3 = 1; break;
-		case 4: LED->bits.led4 = 1; break;
-		case 5: LED->bits.led5 = 1; break;
-		case 6: LED->bits.led6 = 1; break;
-		case 7: LED->bits.led7 = 1; break;
-		case 8: LED->bits.led8 = 1; break;
-		case 9: LED->bits.led9 = 1; break;
+		#define X(n) case n: LED->bits.led##n = val; break;
+		#if defined(__SAKURA_X_TARGET__)
+		BIT_FIELDS_10
+		#elif defined(__CW305_TARGET__)
+		BIT_FIELDS_3
+		#endif
+		#undef X
 	}
-
+}
+void led_on(int pos)
+{
+	led_set(pos, 1);
 }
 
 void led_off(int pos)
 {
-	switch(pos) {
-		case 0: LED->bits.led0 = 0; break;
-		case 1: LED->bits.led1 = 0; break;
-		case 2: LED->bits.led2 = 0; break;
-		case 3: LED->bits.led3 = 0; break;
-		case 4: LED->bits.led4 = 0; break;
-		case 5: LED->bits.led5 = 0; break;
-		case 6: LED->bits.led6 = 0; break;
-		case 7: LED->bits.led7 = 0; break;
-		case 8: LED->bits.led8 = 0; break;
-		case 9: LED->bits.led9 = 0; break;
-	}
+	led_set(pos, 0);
 }
 
 void led_all_on()
 {
-	LED->data = 0x3FF;
+	LED->data = (1u << LED_COUNT) - 1;
 }
 
 void led_all_off()
 {
-	LED->data = 0x000;
+	LED->data = 0x0;
 }

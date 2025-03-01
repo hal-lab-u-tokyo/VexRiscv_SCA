@@ -5,7 +5,7 @@
 #   Project:       sakura-x-vexriscv
 #   Author:        Takuya Kojima in The University of Tokyo (tkojima@hal.ipc.i.u-tokyo.ac.jp)
 #   Created Date:  17-07-2024 22:25:09
-#   Last Modified: 27-02-2025 18:11:51
+#   Last Modified: 01-03-2025 17:58:37
 ###
 
 import chipwhisperer as cw
@@ -15,7 +15,7 @@ import os
 
 import asyncio
 
-PROGRAM_NAME = "hello/hello.elf"
+PROGRAM_NAME = "hello/hello.cw305.elf"
 PROGRAM_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), PROGRAM_NAME)
 
 def parse_args():

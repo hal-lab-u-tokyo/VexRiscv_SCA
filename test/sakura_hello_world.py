@@ -1,11 +1,11 @@
 ###
 #   Copyright (C) 2024 The University of Tokyo
 #   
-#   File:          /test/test_hello_world.py
+#   File:          /test/sakura_hello_world.py
 #   Project:       sakura-x-vexriscv
 #   Author:        Takuya Kojima in The University of Tokyo (tkojima@hal.ipc.i.u-tokyo.ac.jp)
 #   Created Date:  17-07-2024 22:25:09
-#   Last Modified: 27-02-2025 17:20:16
+#   Last Modified: 01-03-2025 17:58:44
 ###
 
 
@@ -16,7 +16,7 @@ import os
 
 import asyncio
 
-PROGRAM_NAME = "hello/hello.elf"
+PROGRAM_NAME = "hello/hello.sakura-x.elf"
 PROGRAM_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), PROGRAM_NAME)
 
 def parse_args():

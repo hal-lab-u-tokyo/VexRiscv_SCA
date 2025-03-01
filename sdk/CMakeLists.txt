@@ -25,6 +25,12 @@ find_package(RVTOOLCHAIN)
 
 include(GNUInstallDirs)
 
+# check SDK_BUILD_TARGET
+if(NOT DEFINED SDK_BUILD_TARGET)
+  # default target
+  set(SDK_BUILD_TARGET "SAKURA-X")
+endif()
+
 add_subdirectory(src)
 add_subdirectory(template)
 

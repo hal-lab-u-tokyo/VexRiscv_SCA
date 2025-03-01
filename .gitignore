@@ -17,7 +17,7 @@ bootloader/*.elf
 # intermediate build files
 *.bgn
 *.bit
-!bitstream/prebuilt.bit
+!bitstream/prebuilt_*.bit
 *.bld
 *.cmd_log
 *.drc
