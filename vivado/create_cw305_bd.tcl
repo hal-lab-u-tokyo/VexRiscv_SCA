@@ -33,9 +33,9 @@ import_files -fileset $constr_set [file normalize [file join $scriptDir "gpio_cw
 # ROM COE file path
 set rom_file_path [file normalize [file join $scriptDir ".." "bootloader" "boot.coe"]]
 if { [file exists $rom_file_path] == 0 } {
-  set errMsg "ROM COE file not found at <$rom_file_path>."
-  common::send_gid_msg -ssname BD::TCL -id 2005 -severity "ERROR" $errMsg
-  return -code error $errMsg
+	set errMsg "ROM COE file not found at <$rom_file_path>."
+	common::send_gid_msg -ssname BD::TCL -id 2005 -severity "ERROR" $errMsg
+	return -code error $errMsg
 }
 
 # update block design
@@ -65,15 +65,15 @@ set DIP [ create_bd_port -dir I -from 3 -to 0 DIP ]
 # change PLL settings
 set pll [ get_bd_cells pll ]
 set_property -dict [list \
-  CONFIG.CLKOUT1_JITTER {183.243} \
-  CONFIG.CLKOUT1_PHASE_ERROR {98.575} \
-  CONFIG.CLKOUT2_JITTER {130.958} \
-  CONFIG.CLKOUT2_PHASE_ERROR {98.575} \
-  CONFIG.CLKOUT2_USED {true} \
-  CONFIG.MMCM_CLKFBOUT_MULT_F {10.000} \
-  CONFIG.MMCM_CLKOUT0_DIVIDE_F {50.000} \
-  CONFIG.MMCM_CLKOUT1_DIVIDE {10} \
-  CONFIG.NUM_OUT_CLKS {2} \
+	CONFIG.CLKOUT1_JITTER {183.243} \
+	CONFIG.CLKOUT1_PHASE_ERROR {98.575} \
+	CONFIG.CLKOUT2_JITTER {130.958} \
+	CONFIG.CLKOUT2_PHASE_ERROR {98.575} \
+	CONFIG.CLKOUT2_USED {true} \
+	CONFIG.MMCM_CLKFBOUT_MULT_F {10.000} \
+	CONFIG.MMCM_CLKOUT0_DIVIDE_F {50.000} \
+	CONFIG.MMCM_CLKOUT1_DIVIDE {10} \
+	CONFIG.NUM_OUT_CLKS {2} \
 ] [get_bd_cells pll]
 
 # Create instance: rst_sys_clk, and set properties
@@ -107,9 +107,9 @@ set dmem_gen [ create_bd_cell -type ip -vlnv xilinx.com:ip:blk_mem_gen:8.4 dmem_
 # Create instance: rom_gen, and set properties
 set rom_gen [ create_bd_cell -type ip -vlnv xilinx.com:ip:blk_mem_gen:8.4 rom_gen ]
 set_property -dict [list \
-  CONFIG.Coe_File $rom_file_path \
-  CONFIG.Load_Init_File {true} \
-  CONFIG.Memory_Type {Single_Port_ROM} \
+	CONFIG.Coe_File $rom_file_path \
+	CONFIG.Load_Init_File {true} \
+	CONFIG.Memory_Type {Single_Port_ROM} \
 ] $rom_gen
 
 # Create instance: VexRiscv_Core_0, and set properties
@@ -118,15 +118,15 @@ set VexRiscv_Core_0 [ create_bd_cell -type ip -vlnv user.org:user:VexRiscv_Core:
 # Create instance: axi_smc_data, and set properties
 set axi_smc_data [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect:1.0 axi_smc_data ]
 set_property -dict [list \
-  CONFIG.NUM_MI {5} \
-  CONFIG.NUM_SI {2} \
+	CONFIG.NUM_MI {5} \
+	CONFIG.NUM_SI {2} \
 ] $axi_smc_data
 
 # Create instance: axi_smc_inst, and set properties
 set axi_smc_inst [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect:1.0 axi_smc_inst ]
 set_property -dict [list \
-  CONFIG.NUM_MI {2} \
-  CONFIG.NUM_SI {2} \
+	CONFIG.NUM_MI {2} \
+	CONFIG.NUM_SI {2} \
 ] $axi_smc_inst
 
 # Create instance: axi_buffer_0, and set properties
@@ -138,12 +138,30 @@ set axi_lfsr_0 [ create_bd_cell -type ip -vlnv tkojima.me:user:axi_lfsr:1.0 axi_
 # Create instance: axi_gpio_0, and set properties
 set axi_gpio_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 axi_gpio_0 ]
 set_property -dict [list \
-  CONFIG.C_ALL_INPUTS_2 {1} \
-  CONFIG.C_ALL_OUTPUTS {1} \
-  CONFIG.C_GPIO2_WIDTH {4} \
-  CONFIG.C_GPIO_WIDTH {12} \
-  CONFIG.C_IS_DUAL {1} \
+	CONFIG.C_ALL_INPUTS_2 {1} \
+	CONFIG.C_ALL_OUTPUTS {1} \
+	CONFIG.C_GPIO2_WIDTH {4} \
+	CONFIG.C_GPIO_WIDTH {13} \
+	CONFIG.C_IS_DUAL {1} \
 ] $axi_gpio_0
+
+# Create instance: xlslice_tio4, and set properties
+set xlslice_tio4 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_tio4 ]
+set_property -dict [list \
+	CONFIG.DIN_WIDTH {13} \
+	CONFIG.DIN_FROM {0} \
+	CONFIG.DIN_TO {0} \
+	CONFIG.DOUT_WIDTH {1} \
+] $xlslice_tio4
+
+# Create instance: xlslice_header, and set properties
+set xlslice_header [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_header ]
+set_property -dict [list \
+	CONFIG.DIN_WIDTH {13} \
+	CONFIG.DIN_FROM {12} \
+	CONFIG.DIN_TO {1} \
+    CONFIG.DOUT_WIDTH {12} \
+] $xlslice_header
 
 # disconnect usb interface - GPIO
 delete_bd_objs [get_bd_intf_nets usb_interface_0_axi_periph_M00_AXI]
@@ -173,8 +191,10 @@ connect_bd_intf_net -intf_net usb_interface_0_axi_periph_M01_AXI [get_bd_intf_pi
 connect_bd_intf_net -intf_net usb_interface_0_axi_periph_M02_AXI [get_bd_intf_pins usb_interface_0_axi_periph/M02_AXI] [get_bd_intf_pins axi_smc_data/S01_AXI]
 
 ## Make new port connections
-connect_bd_net -net axi_gpio_0_gpio_io_o [get_bd_pins axi_gpio_0/gpio_io_o] [get_bd_ports HEADER_OUT]
-connect_bd_net -net k_dipsw_1 [get_bd_ports DIP] [get_bd_pins axi_gpio_0/gpio2_io_i]
+connect_bd_net -net axi_gpio_0_gpio_io_o [get_bd_pins axi_gpio_0/gpio_io_o] [get_bd_pins xlslice_tio4/Din] [get_bd_pins xlslice_header/Din]
+connect_bd_net -net header_0 [get_bd_pins xlslice_tio4/Dout] [get_bd_ports TIO4]
+connect_bd_net -net tio4_0 [get_bd_pins xlslice_header/Dout] [get_bd_ports HEADER_OUT]
+connect_bd_net -net dipsw_0 [get_bd_ports DIP] [get_bd_pins axi_gpio_0/gpio2_io_i]
 
 # connecting existing nets
 ## clock signals

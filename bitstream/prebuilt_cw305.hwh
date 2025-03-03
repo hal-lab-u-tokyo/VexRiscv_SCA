@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Sat Mar  1 10:52:28 2025" VIVADOVERSION="2023.2_AR000036820">
+<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Tue Mar  4 03:54:02 2025" VIVADOVERSION="2023.2_AR000036820">
 
   <SYSTEMINFO ARCH="artix7" DEVICE="7a100t" NAME="main" PACKAGE="ftg256" SPEEDGRADE="-2"/>
 
@@ -9,9 +9,9 @@
         <CONNECTION INSTANCE="axi_gpio_0" PORT="gpio2_io_i"/>
       </CONNECTIONS>
     </PORT>
-    <PORT DIR="O" LEFT="11" NAME="HEADER_OUT" RIGHT="0" SIGIS="undef" SIGNAME="axi_gpio_0_gpio_io_o">
+    <PORT DIR="O" LEFT="11" NAME="HEADER_OUT" RIGHT="0" SIGIS="undef" SIGNAME="xlslice_header_Dout">
       <CONNECTIONS>
-        <CONNECTION INSTANCE="axi_gpio_0" PORT="gpio_io_o"/>
+        <CONNECTION INSTANCE="xlslice_header" PORT="Dout"/>
       </CONNECTIONS>
     </PORT>
     <PORT DIR="O" LEFT="2" NAME="LED" RIGHT="0" SIGIS="undef" SIGNAME="xlslice_0_Dout">
@@ -35,7 +35,11 @@
     <PORT DIR="O" LEFT="0" NAME="TIO1" RIGHT="0" SIGIS="undef"/>
     <PORT DIR="O" LEFT="0" NAME="TIO2" RIGHT="0" SIGIS="undef"/>
     <PORT DIR="O" LEFT="0" NAME="TIO3" RIGHT="0" SIGIS="undef"/>
-    <PORT DIR="O" LEFT="0" NAME="TIO4" RIGHT="0" SIGIS="undef"/>
+    <PORT DIR="O" LEFT="0" NAME="TIO4" RIGHT="0" SIGIS="undef" SIGNAME="xlslice_tio4_Dout">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="xlslice_tio4" PORT="Dout"/>
+      </CONNECTIONS>
+    </PORT>
     <PORT CLKFREQUENCY="96000000" DIR="I" NAME="USBCK0" SIGIS="clk" SIGNAME="External_Ports_USBCK0">
       <CONNECTIONS>
         <CONNECTION INSTANCE="rst_usb_clk" PORT="slowest_sync_clk"/>
@@ -106,7 +110,7 @@
         <PARAMETER NAME="C_M_INST_AXI_WUSER_WIDTH" VALUE="1"/>
         <PARAMETER NAME="C_S_CTRL_AXI_ADDR_WIDTH" VALUE="4"/>
         <PARAMETER NAME="C_S_CTRL_AXI_DATA_WIDTH" VALUE="32"/>
-        <PARAMETER NAME="Component_Name" VALUE="main_VexRiscv_Core_0_1"/>
+        <PARAMETER NAME="Component_Name" VALUE="main_VexRiscv_Core_0_0"/>
         <PARAMETER NAME="EDK_IPTYPE" VALUE="PERIPHERAL"/>
         <PARAMETER NAME="C_S_CTRL_AXI_BASEADDR" VALUE="0x40000000"/>
         <PARAMETER NAME="C_S_CTRL_AXI_HIGHADDR" VALUE="0x4000FFFF"/>
@@ -879,7 +883,7 @@
         <PARAMETER NAME="BUFFER_DEPTH" VALUE="32"/>
         <PARAMETER NAME="C_S_AXI_ADDR_WIDTH" VALUE="4"/>
         <PARAMETER NAME="C_S_AXI_DATA_WIDTH" VALUE="32"/>
-        <PARAMETER NAME="Component_Name" VALUE="main_axi_buffer_0_1"/>
+        <PARAMETER NAME="Component_Name" VALUE="main_axi_buffer_0_0"/>
         <PARAMETER NAME="EDK_IPTYPE" VALUE="PERIPHERAL"/>
         <PARAMETER NAME="C_S_AXI_BASEADDR" VALUE="0xA2000000"/>
         <PARAMETER NAME="C_S_AXI_HIGHADDR" VALUE="0xA200FFFF"/>
@@ -1686,7 +1690,7 @@
         <PARAMETER NAME="C_S_AXI_PROTOCOL" VALUE="AXI4"/>
         <PARAMETER NAME="C_S_AXI_SUPPORTS_NARROW_BURST" VALUE="0"/>
         <PARAMETER NAME="BMG_INSTANCE" VALUE="EXTERNAL"/>
-        <PARAMETER NAME="Component_Name" VALUE="main_axi_dmem_ctrl_1"/>
+        <PARAMETER NAME="Component_Name" VALUE="main_axi_dmem_ctrl_0"/>
         <PARAMETER NAME="DATA_WIDTH" VALUE="32"/>
         <PARAMETER NAME="ECC_ONOFF_RESET_VALUE" VALUE="0"/>
         <PARAMETER NAME="ECC_TYPE" VALUE="0"/>
@@ -2002,7 +2006,7 @@
             <REGISTER NAME="GPIO_DATA">
               <PROPERTY NAME="DESCRIPTION" VALUE="Channel-1 AXI GPIO Data register"/>
               <PROPERTY NAME="ADDRESS_OFFSET" VALUE="0x0"/>
-              <PROPERTY NAME="SIZE" VALUE="12"/>
+              <PROPERTY NAME="SIZE" VALUE="13"/>
               <PROPERTY NAME="ACCESS" VALUE="read-write"/>
               <PROPERTY NAME="IS_ENABLED" VALUE="true"/>
               <PROPERTY NAME="RESET_VALUE" VALUE="0x0"/>
@@ -2015,14 +2019,14 @@
                   <PROPERTY NAME="WRITE_CONSTRAINT" VALUE="0"/>
                   <PROPERTY NAME="READ_ACTION" VALUE=""/>
                   <PROPERTY NAME="BIT_OFFSET" VALUE="0"/>
-                  <PROPERTY NAME="BIT_WIDTH" VALUE="12"/>
+                  <PROPERTY NAME="BIT_WIDTH" VALUE="13"/>
                 </FIELD>
               </FIELDS>
             </REGISTER>
             <REGISTER NAME="GPIO_TRI">
               <PROPERTY NAME="DESCRIPTION" VALUE="Channel-1 AXI GPIO 3-State Control register"/>
               <PROPERTY NAME="ADDRESS_OFFSET" VALUE="0x4"/>
-              <PROPERTY NAME="SIZE" VALUE="12"/>
+              <PROPERTY NAME="SIZE" VALUE="13"/>
               <PROPERTY NAME="ACCESS" VALUE="read-write"/>
               <PROPERTY NAME="IS_ENABLED" VALUE="true"/>
               <PROPERTY NAME="RESET_VALUE" VALUE="0x0"/>
@@ -2035,7 +2039,7 @@
                   <PROPERTY NAME="WRITE_CONSTRAINT" VALUE="0"/>
                   <PROPERTY NAME="READ_ACTION" VALUE=""/>
                   <PROPERTY NAME="BIT_OFFSET" VALUE="0"/>
-                  <PROPERTY NAME="BIT_WIDTH" VALUE="12"/>
+                  <PROPERTY NAME="BIT_WIDTH" VALUE="13"/>
                 </FIELD>
               </FIELDS>
             </REGISTER>
@@ -2168,7 +2172,7 @@
             <REGISTER NAME="GPIO_DATA">
               <PROPERTY NAME="DESCRIPTION" VALUE="Channel-1 AXI GPIO Data register"/>
               <PROPERTY NAME="ADDRESS_OFFSET" VALUE="0x0"/>
-              <PROPERTY NAME="SIZE" VALUE="12"/>
+              <PROPERTY NAME="SIZE" VALUE="13"/>
               <PROPERTY NAME="ACCESS" VALUE="read-write"/>
               <PROPERTY NAME="IS_ENABLED" VALUE="true"/>
               <PROPERTY NAME="RESET_VALUE" VALUE="0x0"/>
@@ -2181,14 +2185,14 @@
                   <PROPERTY NAME="WRITE_CONSTRAINT" VALUE="0"/>
                   <PROPERTY NAME="READ_ACTION" VALUE=""/>
                   <PROPERTY NAME="BIT_OFFSET" VALUE="0"/>
-                  <PROPERTY NAME="BIT_WIDTH" VALUE="12"/>
+                  <PROPERTY NAME="BIT_WIDTH" VALUE="13"/>
                 </FIELD>
               </FIELDS>
             </REGISTER>
             <REGISTER NAME="GPIO_TRI">
               <PROPERTY NAME="DESCRIPTION" VALUE="Channel-1 AXI GPIO 3-State Control register"/>
               <PROPERTY NAME="ADDRESS_OFFSET" VALUE="0x4"/>
-              <PROPERTY NAME="SIZE" VALUE="12"/>
+              <PROPERTY NAME="SIZE" VALUE="13"/>
               <PROPERTY NAME="ACCESS" VALUE="read-write"/>
               <PROPERTY NAME="IS_ENABLED" VALUE="true"/>
               <PROPERTY NAME="RESET_VALUE" VALUE="0x0"/>
@@ -2201,7 +2205,7 @@
                   <PROPERTY NAME="WRITE_CONSTRAINT" VALUE="0"/>
                   <PROPERTY NAME="READ_ACTION" VALUE=""/>
                   <PROPERTY NAME="BIT_OFFSET" VALUE="0"/>
-                  <PROPERTY NAME="BIT_WIDTH" VALUE="12"/>
+                  <PROPERTY NAME="BIT_WIDTH" VALUE="13"/>
                 </FIELD>
               </FIELDS>
             </REGISTER>
@@ -2337,14 +2341,14 @@
         <PARAMETER NAME="C_DOUT_DEFAULT_2" VALUE="0x00000000"/>
         <PARAMETER NAME="C_FAMILY" VALUE="artix7"/>
         <PARAMETER NAME="C_GPIO2_WIDTH" VALUE="4"/>
-        <PARAMETER NAME="C_GPIO_WIDTH" VALUE="12"/>
+        <PARAMETER NAME="C_GPIO_WIDTH" VALUE="13"/>
         <PARAMETER NAME="C_INTERRUPT_PRESENT" VALUE="0"/>
         <PARAMETER NAME="C_IS_DUAL" VALUE="1"/>
         <PARAMETER NAME="C_S_AXI_ADDR_WIDTH" VALUE="9"/>
         <PARAMETER NAME="C_S_AXI_DATA_WIDTH" VALUE="32"/>
         <PARAMETER NAME="C_TRI_DEFAULT" VALUE="0xFFFFFFFF"/>
         <PARAMETER NAME="C_TRI_DEFAULT_2" VALUE="0xFFFFFFFF"/>
-        <PARAMETER NAME="Component_Name" VALUE="main_axi_gpio_0_1"/>
+        <PARAMETER NAME="Component_Name" VALUE="main_axi_gpio_0_0"/>
         <PARAMETER NAME="GPIO2_BOARD_INTERFACE" VALUE="Custom"/>
         <PARAMETER NAME="GPIO_BOARD_INTERFACE" VALUE="Custom"/>
         <PARAMETER NAME="USE_BOARD_FLOW" VALUE="false"/>
@@ -2358,9 +2362,10 @@
             <CONNECTION INSTANCE="External_Ports" PORT="DIP"/>
           </CONNECTIONS>
         </PORT>
-        <PORT DIR="O" LEFT="11" NAME="gpio_io_o" RIGHT="0" SIGIS="undef" SIGNAME="axi_gpio_0_gpio_io_o">
+        <PORT DIR="O" LEFT="12" NAME="gpio_io_o" RIGHT="0" SIGIS="undef" SIGNAME="axi_gpio_0_gpio_io_o">
           <CONNECTIONS>
-            <CONNECTION INSTANCE="External_Ports" PORT="HEADER_OUT"/>
+            <CONNECTION INSTANCE="xlslice_tio4" PORT="Din"/>
+            <CONNECTION INSTANCE="xlslice_header" PORT="Din"/>
           </CONNECTIONS>
         </PORT>
         <PORT CLKFREQUENCY="100000000" DIR="I" NAME="s_axi_aclk" SIGIS="clk" SIGNAME="pll_clk_out2">
@@ -2854,7 +2859,7 @@
         <PARAMETER NAME="C_S_AXI_PROTOCOL" VALUE="AXI4"/>
         <PARAMETER NAME="C_S_AXI_SUPPORTS_NARROW_BURST" VALUE="0"/>
         <PARAMETER NAME="BMG_INSTANCE" VALUE="EXTERNAL"/>
-        <PARAMETER NAME="Component_Name" VALUE="main_axi_imem_ctrl_1"/>
+        <PARAMETER NAME="Component_Name" VALUE="main_axi_imem_ctrl_0"/>
         <PARAMETER NAME="DATA_WIDTH" VALUE="32"/>
         <PARAMETER NAME="ECC_ONOFF_RESET_VALUE" VALUE="0"/>
         <PARAMETER NAME="ECC_TYPE" VALUE="0"/>
@@ -3693,7 +3698,7 @@
       <PARAMETERS>
         <PARAMETER NAME="C_S00_AXI_ADDR_WIDTH" VALUE="4"/>
         <PARAMETER NAME="C_S00_AXI_DATA_WIDTH" VALUE="32"/>
-        <PARAMETER NAME="Component_Name" VALUE="main_axi_lfsr_0_1"/>
+        <PARAMETER NAME="Component_Name" VALUE="main_axi_lfsr_0_0"/>
         <PARAMETER NAME="EDK_IPTYPE" VALUE="PERIPHERAL"/>
         <PARAMETER NAME="C_S00_AXI_BASEADDR" VALUE="0xA3000000"/>
         <PARAMETER NAME="C_S00_AXI_HIGHADDR" VALUE="0xA300FFFF"/>
@@ -3888,7 +3893,7 @@
         <PARAMETER NAME="C_S_AXI_PROTOCOL" VALUE="AXI4"/>
         <PARAMETER NAME="C_S_AXI_SUPPORTS_NARROW_BURST" VALUE="0"/>
         <PARAMETER NAME="BMG_INSTANCE" VALUE="EXTERNAL"/>
-        <PARAMETER NAME="Component_Name" VALUE="main_axi_rom_ctrl_1"/>
+        <PARAMETER NAME="Component_Name" VALUE="main_axi_rom_ctrl_0"/>
         <PARAMETER NAME="DATA_WIDTH" VALUE="32"/>
         <PARAMETER NAME="ECC_ONOFF_RESET_VALUE" VALUE="0"/>
         <PARAMETER NAME="ECC_TYPE" VALUE="0"/>
@@ -4182,15 +4187,15 @@
         </BUSINTERFACE>
       </BUSINTERFACES>
     </MODULE>
-    <MODULE BD="main_axi_smc_data_1" BDTYPE="SBD" COREREVISION="21" DRIVERMODE="CORE" FULLNAME="/axi_smc_data" HWVERSION="1.0" INSTANCE="axi_smc_data" IPTYPE="BUS" IS_ENABLE="1" MODCLASS="BUS" MODTYPE="smartconnect" SIM_BD="main_axi_smc_data_1" VLNV="xilinx.com:ip:smartconnect:1.0">
+    <MODULE BD="main_axi_smc_data_0" BDTYPE="SBD" COREREVISION="21" DRIVERMODE="CORE" FULLNAME="/axi_smc_data" HWVERSION="1.0" INSTANCE="axi_smc_data" IPTYPE="BUS" IS_ENABLE="1" MODCLASS="BUS" MODTYPE="smartconnect" SIM_BD="main_axi_smc_data_0" VLNV="xilinx.com:ip:smartconnect:1.0">
       <DOCUMENTS>
         <DOCUMENT SOURCE="http://www.xilinx.com/cgi-bin/docs/ipdoc?c=smartconnect;v=v1_0;d=pg247-smartconnect.pdf"/>
       </DOCUMENTS>
       <PARAMETERS>
         <PARAMETER NAME="HAS_RESET" VALUE="1"/>
-        <PARAMETER NAME="TLM_COMPONENT_NAME" VALUE="main_axi_smc_data_1"/>
+        <PARAMETER NAME="TLM_COMPONENT_NAME" VALUE="main_axi_smc_data_0"/>
         <PARAMETER NAME="ADVANCED_PROPERTIES" VALUE="0"/>
-        <PARAMETER NAME="Component_Name" VALUE="main_axi_smc_data_1"/>
+        <PARAMETER NAME="Component_Name" VALUE="main_axi_smc_data_0"/>
         <PARAMETER NAME="HAS_ARESETN" VALUE="1"/>
         <PARAMETER NAME="NUM_CLKS" VALUE="1"/>
         <PARAMETER NAME="NUM_MI" VALUE="5"/>
@@ -5429,15 +5434,15 @@
         </BUSINTERFACE>
       </BUSINTERFACES>
     </MODULE>
-    <MODULE BD="main_axi_smc_inst_1" BDTYPE="SBD" COREREVISION="21" DRIVERMODE="CORE" FULLNAME="/axi_smc_inst" HWVERSION="1.0" INSTANCE="axi_smc_inst" IPTYPE="BUS" IS_ENABLE="1" MODCLASS="BUS" MODTYPE="smartconnect" SIM_BD="main_axi_smc_inst_1" VLNV="xilinx.com:ip:smartconnect:1.0">
+    <MODULE BD="main_axi_smc_inst_0" BDTYPE="SBD" COREREVISION="21" DRIVERMODE="CORE" FULLNAME="/axi_smc_inst" HWVERSION="1.0" INSTANCE="axi_smc_inst" IPTYPE="BUS" IS_ENABLE="1" MODCLASS="BUS" MODTYPE="smartconnect" SIM_BD="main_axi_smc_inst_0" VLNV="xilinx.com:ip:smartconnect:1.0">
       <DOCUMENTS>
         <DOCUMENT SOURCE="http://www.xilinx.com/cgi-bin/docs/ipdoc?c=smartconnect;v=v1_0;d=pg247-smartconnect.pdf"/>
       </DOCUMENTS>
       <PARAMETERS>
         <PARAMETER NAME="HAS_RESET" VALUE="1"/>
-        <PARAMETER NAME="TLM_COMPONENT_NAME" VALUE="main_axi_smc_inst_1"/>
+        <PARAMETER NAME="TLM_COMPONENT_NAME" VALUE="main_axi_smc_inst_0"/>
         <PARAMETER NAME="ADVANCED_PROPERTIES" VALUE="0"/>
-        <PARAMETER NAME="Component_Name" VALUE="main_axi_smc_inst_1"/>
+        <PARAMETER NAME="Component_Name" VALUE="main_axi_smc_inst_0"/>
         <PARAMETER NAME="HAS_ARESETN" VALUE="1"/>
         <PARAMETER NAME="NUM_CLKS" VALUE="1"/>
         <PARAMETER NAME="NUM_MI" VALUE="2"/>
@@ -6432,7 +6437,7 @@
         <PARAMETER NAME="CTRL_ECC_ALGO" VALUE="NONE"/>
         <PARAMETER NAME="Coe_File" VALUE="no_coe_file_loaded"/>
         <PARAMETER NAME="Collision_Warnings" VALUE="ALL"/>
-        <PARAMETER NAME="Component_Name" VALUE="main_dmem_gen_1"/>
+        <PARAMETER NAME="Component_Name" VALUE="main_dmem_gen_0"/>
         <PARAMETER NAME="Disable_Collision_Warnings" VALUE="false"/>
         <PARAMETER NAME="Disable_Out_of_Range_Warnings" VALUE="false"/>
         <PARAMETER NAME="ECC" VALUE="false"/>
@@ -6644,7 +6649,7 @@
         <PARAMETER NAME="CTRL_ECC_ALGO" VALUE="NONE"/>
         <PARAMETER NAME="Coe_File" VALUE="no_coe_file_loaded"/>
         <PARAMETER NAME="Collision_Warnings" VALUE="ALL"/>
-        <PARAMETER NAME="Component_Name" VALUE="main_imem_gen_1"/>
+        <PARAMETER NAME="Component_Name" VALUE="main_imem_gen_0"/>
         <PARAMETER NAME="Disable_Collision_Warnings" VALUE="false"/>
         <PARAMETER NAME="Disable_Out_of_Range_Warnings" VALUE="false"/>
         <PARAMETER NAME="ECC" VALUE="false"/>
@@ -7439,7 +7444,7 @@
         <PARAMETER NAME="C_INITA_VAL" VALUE="0"/>
         <PARAMETER NAME="C_INITB_VAL" VALUE="0"/>
         <PARAMETER NAME="C_INIT_FILE" VALUE="NONE"/>
-        <PARAMETER NAME="C_INIT_FILE_NAME" VALUE="main_rom_gen_1.mif"/>
+        <PARAMETER NAME="C_INIT_FILE_NAME" VALUE="main_rom_gen_0.mif"/>
         <PARAMETER NAME="C_INTERFACE_TYPE" VALUE="0"/>
         <PARAMETER NAME="C_LOAD_INIT_FILE" VALUE="1"/>
         <PARAMETER NAME="C_MEM_TYPE" VALUE="3"/>
@@ -7482,7 +7487,7 @@
         <PARAMETER NAME="CTRL_ECC_ALGO" VALUE="NONE"/>
         <PARAMETER NAME="Coe_File" VALUE="../../../../../../../bootloader/boot.coe"/>
         <PARAMETER NAME="Collision_Warnings" VALUE="ALL"/>
-        <PARAMETER NAME="Component_Name" VALUE="main_rom_gen_1"/>
+        <PARAMETER NAME="Component_Name" VALUE="main_rom_gen_0"/>
         <PARAMETER NAME="Disable_Collision_Warnings" VALUE="false"/>
         <PARAMETER NAME="Disable_Out_of_Range_Warnings" VALUE="false"/>
         <PARAMETER NAME="ECC" VALUE="false"/>
@@ -7606,7 +7611,7 @@
         <PARAMETER NAME="C_NUM_INTERCONNECT_ARESETN" VALUE="1"/>
         <PARAMETER NAME="C_NUM_PERP_ARESETN" VALUE="1"/>
         <PARAMETER NAME="C_NUM_PERP_RST" VALUE="1"/>
-        <PARAMETER NAME="Component_Name" VALUE="main_rst_core_clk_1"/>
+        <PARAMETER NAME="Component_Name" VALUE="main_rst_core_clk_0"/>
         <PARAMETER NAME="RESET_BOARD_INTERFACE" VALUE="Custom"/>
         <PARAMETER NAME="USE_BOARD_FLOW" VALUE="false"/>
         <PARAMETER NAME="EDK_IPTYPE" VALUE="PERIPHERAL"/>
@@ -8874,6 +8879,54 @@
         <PORT DIR="O" LEFT="2" NAME="Dout" RIGHT="0" SIGIS="undef" SIGNAME="xlslice_0_Dout">
           <CONNECTIONS>
             <CONNECTION INSTANCE="External_Ports" PORT="LED"/>
+          </CONNECTIONS>
+        </PORT>
+      </PORTS>
+      <BUSINTERFACES/>
+    </MODULE>
+    <MODULE COREREVISION="3" FULLNAME="/xlslice_header" HWVERSION="1.0" INSTANCE="xlslice_header" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="xlslice" VLNV="xilinx.com:ip:xlslice:1.0">
+      <DOCUMENTS/>
+      <PARAMETERS>
+        <PARAMETER NAME="DIN_FROM" VALUE="12"/>
+        <PARAMETER NAME="DIN_TO" VALUE="1"/>
+        <PARAMETER NAME="DIN_WIDTH" VALUE="13"/>
+        <PARAMETER NAME="Component_Name" VALUE="main_xlslice_header_0"/>
+        <PARAMETER NAME="DOUT_WIDTH" VALUE="12"/>
+        <PARAMETER NAME="EDK_IPTYPE" VALUE="PERIPHERAL"/>
+      </PARAMETERS>
+      <PORTS>
+        <PORT DIR="I" LEFT="12" NAME="Din" RIGHT="0" SIGIS="undef" SIGNAME="axi_gpio_0_gpio_io_o">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="axi_gpio_0" PORT="gpio_io_o"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="11" NAME="Dout" RIGHT="0" SIGIS="undef" SIGNAME="xlslice_header_Dout">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External_Ports" PORT="HEADER_OUT"/>
+          </CONNECTIONS>
+        </PORT>
+      </PORTS>
+      <BUSINTERFACES/>
+    </MODULE>
+    <MODULE COREREVISION="3" FULLNAME="/xlslice_tio4" HWVERSION="1.0" INSTANCE="xlslice_tio4" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="xlslice" VLNV="xilinx.com:ip:xlslice:1.0">
+      <DOCUMENTS/>
+      <PARAMETERS>
+        <PARAMETER NAME="DIN_FROM" VALUE="0"/>
+        <PARAMETER NAME="DIN_TO" VALUE="0"/>
+        <PARAMETER NAME="DIN_WIDTH" VALUE="13"/>
+        <PARAMETER NAME="Component_Name" VALUE="main_xlslice_tio4_0"/>
+        <PARAMETER NAME="DOUT_WIDTH" VALUE="1"/>
+        <PARAMETER NAME="EDK_IPTYPE" VALUE="PERIPHERAL"/>
+      </PARAMETERS>
+      <PORTS>
+        <PORT DIR="I" LEFT="12" NAME="Din" RIGHT="0" SIGIS="undef" SIGNAME="axi_gpio_0_gpio_io_o">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="axi_gpio_0" PORT="gpio_io_o"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="Dout" RIGHT="0" SIGIS="undef" SIGNAME="xlslice_tio4_Dout">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External_Ports" PORT="TIO4"/>
           </CONNECTIONS>
         </PORT>
       </PORTS>

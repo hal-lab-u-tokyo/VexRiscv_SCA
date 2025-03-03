@@ -11,6 +11,24 @@ Prebuilt bitstreams configured with default settings are also provided, so you c
 - [sakura-x-shell](https://github.com/hal-lab-u-tokyo/sakura-x-shell) (included as a submodule)
 - [cw305-shell](https://github.com/hal-lab-u-tokyo/cw305-shell) (included as a submodule)
 
+# System Architecture
+<img src="docs/images/system_architecture.png" width="800">
+
+The VexRiscV core is configured with RV32IM instruction set (no floating-point unit), 4KB instruction cache, and 4KB data cache, and AXI4 data and instruction memory interfaces.
+If you want to customize the core configuration, please modify the [CpuConfig.scala](./src/main/scala/CpuConfig.scala) file.
+
+As peripheral modules, pseudo-random number generators based on LFSR, serial-like communication modules, and GPIO.
+The GPIO is connected to onboard LED, pin headers, and DIP switches.
+Therefore, it can be used for triggering the oscilloscope.
+For CW305 FPGA board, TIO4 is connected LSB of the GPIO.
+
+An external host PC can also communicate with the FPGA through an AXI4 interconnect.
+A program binary is also initilized via this interconnect.
+The VexRiscV core has an external host interface to launch the core.
+Details of each IP are described in the [Included IPs](#included-ips) section.
+
+ROM is accessed from the instruction interface of the VexRiscv core.
+The content of the ROM is initialized by the bootloader as described in the [Bootloader](#bootloader) section.
 
 # Configure your boards
 ## SAKURA-X board

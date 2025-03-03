@@ -5,7 +5,7 @@
 *    Project:       expr-riscv
 *    Author:        Takuya Kojima in The University of Tokyo (tkojima@hal.ipc.i.u-tokyo.ac.jp)
 *    Created Date:  07-12-2023 08:51:43
-*    Last Modified: 01-03-2025 17:44:54
+*    Last Modified: 04-03-2025 04:49:38
 */
 
 #define LED_BASE_ADDR		0xA0000000
@@ -25,7 +25,7 @@
     X(8)  \
     X(9)
 
-#define BIT_FIELDS_12 \
+#define BIT_FIELDS_13 \
     X(0)  \
     X(1)  \
     X(2)  \
@@ -37,7 +37,8 @@
     X(8)  \
     X(9)  \
 	X(10) \
-	X(11)
+	X(11) \
+	X(12)
 
 #define BIT_FIELDS_8 \
 	X(0)  \
@@ -98,7 +99,7 @@ typedef struct {
 			#if defined(__SAKURA_X_TARGET__)
 			BIT_FIELDS_10
 			#elif defined(__CW305_TARGET__)
-			BIT_FIELDS_12
+			BIT_FIELDS_13
 			#endif
 			#undef X
 		} __attribute__((__packed__)) bits;
