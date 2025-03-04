@@ -41,10 +41,10 @@ endef
 
 ifeq ($(USE_ASM),No)
 %.o: %.c
-	$(call compile,$^,$@)
+	$(call compile,$<,$@)
 else
 %.o: %.s
-	$(call compile,$^,$@)
+	$(call compile,$<,$@)
 endif
 
 %.elf: %.o $(EXTRA_OBJ)
