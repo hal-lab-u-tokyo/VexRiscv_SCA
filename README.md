@@ -10,6 +10,8 @@ Prebuilt bitstreams configured with default settings are also provided, so you c
 - [VexRiscv](https://github.com/SpinalHDL/VexRiscv) (included as a submodule)
 - [sakura-x-shell](https://github.com/hal-lab-u-tokyo/sakura-x-shell) (included as a submodule)
 - [cw305-shell](https://github.com/hal-lab-u-tokyo/cw305-shell) (included as a submodule)
+- [riscv-gnu-toolchain](https://github.com/riscv-collab/riscv-gnu-toolchain) (for building the SDK)
+- (optional) [llvm](https://github.com/llvm/llvm-project) (for changing the compiler to clang)
 
 # System Architecture
 <img src="docs/images/system_architecture.png" width="800">
@@ -210,13 +212,21 @@ Hello, World! 9
 ```
 
 # Application Development
-## Build and Install software development kit
-This repository includes a software development kit for VexRiscv on the SAKURA-X board with a simply implemented library.
+This repository includes a software development kit (SDK) for VexRiscv on the SAKURA-X or CW305 board with a simply implemented library.
+
+The SDK is needed to build with the following two options:
+
+1. Building the SDK on your local machine
+After installing the prequisites (riscv-gnu-toolchain and llvm), you can build the SDK on your local machine with the following instructions.
+
+2. Building the SDK with the provided Dockerfile (recommended)
+
+## Option 1: SDK building instructions
 
 The following commands will build and install the SDK.
 ```
 mkdir build
-cmake [-DCMAKE_INSTALL_PREFIX=<install path>] [-DSDK_BUILD_TARGET=<TARGET>] <path to this repository>/sdk
+cmake [-DCMAKE_INSTALL_PREFIX=<install path>] [-DSDK_BUILD_TARGET=<TARGET>] [-DSDK_DEFAULT_C_COMPILER=GCC or CLANG] <path to this repository>/sdk
 cmake --build .
 cmake --install .
 ```
@@ -225,8 +235,30 @@ The installation path can be specified with the `CMAKE_INSTALL_PREFIX` option.
 
 The `SDK_BUILD_TARGET` option specifies the target board for the SDK. The default value is `SAKURA-X`. If you want to build the SDK for the CW305 board, specify `CW305` as the value.
 
+The `SDK_DEFAULT_C_COMPILER` option specifies the C compiler to be used. The default value is `gcc`. If you want to use `clang`, specify `clang` as the value.
+Please ensure that the `clang` command is available in your PATH.
 
-## Create a new application
+## Option 2: Using provided Dockerfile
+This repository provides a Dockerfile to build the SDK with the provided Dockerfile.
+The following is an example of how to build the SDK with the Dockerfile.
+
+```bash
+docker build -t vexriscv_sca_sdk .
+docker run -it --user $(id -u):$(id -g) \
+       -v <local path>:/work \
+	   -e SDK_DIR=<installed sdk path (see below)> \
+	   vexriscv_sca_sdk
+```
+
+The `<local path>` is the path to the directory where you want to mount the SDK (e.g., C source files).
+
+The Dockerfile builds all configurations of the SDK, including the `SAKURA-X` and `CW305` boards with `gcc` and `clang` compilers. Installed SDKs are located in
+* `/opt/vexriscv-sca-sdk/sakura-x-gcc`: gcc for SAKURA-X board
+* `/opt/vexriscv-sca-sdk/sakura-x-clang`: clang for SAKURA-X board
+* `/opt/vexriscv-sca-sdk/cw305-gcc`: gcc for CW305 board
+* `/opt/vexriscv-sca-sdk/cw305-clang`: clang for CW305 board
+
+# Create a new application
 Please create a c source file app_name.c and Makefile as follows.
 
 ```Makefile
@@ -240,7 +272,11 @@ include  ${SDK_DIR}/etc/Makefile.common
 
 `app_name` can be any name you like.
 
-### Compile options
+Before compiling the application, you need to set the `SDK_DIR` environment variable to the path of the SDK.
+For local build, `CMAKE_INSTALL_PREFIX` is the path to the SDK.
+For docker build, please set the above mentioned path.
+
+## Compile options
 In the Makefile, you can specify the optimization level by adding the following line in the Makefile.
 ```Makefile
 OPT_FLAGS = -O2

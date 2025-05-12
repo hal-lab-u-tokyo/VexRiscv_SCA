@@ -5,7 +5,7 @@
 #    Project:       sakura-x-vexriscv
 #    Author:        Takuya Kojima in The University of Tokyo (tkojima@hal.ipc.i.u-tokyo.ac.jp)
 #    Created Date:  07-07-2024 21:42:02
-#    Last Modified: 07-07-2024 21:42:02
+#    Last Modified: 08-03-2025 09:11:47
 #
 
 SDK_DIR := @CMAKE_INSTALL_PREFIX@
@@ -13,7 +13,15 @@ SDK_DIR := @CMAKE_INSTALL_PREFIX@
 LIB_DIR := ${SDK_DIR}/lib
 
 RVTOOLCHAIN := @RISCV-TOOLCHAIN-DIR@
+
+SDK_C_COMPILER := @SDK_DEFAULT_C_COMPILER@
+
+ifeq ($(SDK_C_COMPILER),clang)
+CC      := @LLVM_CLANG@
+else
 CC      := $(RVTOOLCHAIN)/bin/riscv64-unknown-elf-gcc
+endif
+
 LD		:= $(RVTOOLCHAIN)/bin/riscv64-unknown-elf-ld
 OBJDUMP := $(RVTOOLCHAIN)/bin/riscv64-unknown-elf-objdump
 OBJCOPY := $(RVTOOLCHAIN)/bin/riscv64-unknown-elf-objcopy
@@ -29,7 +37,12 @@ USE_ASM ?= No
 OPT_LEVEL ?= -O0
 LDFLAGS := -T$(LDSCRIPT) -L$(LIB_DIR) -L$(GCC_LIB)
 EXTRA_CFLAGS ?=
+
+ifeq ($(SDK_C_COMPILER),clang)
+CFLAGS  := -target riscv32 -march=rv32im -mabi=ilp32 -static -I$(INCLUDE_PATH) -fno-builtin -g0 $(OPT_LEVEL)
+else
 CFLAGS  := -march=rv32im -mabi=ilp32 -static -I$(INCLUDE_PATH) -fno-builtin -g0 $(OPT_LEVEL)
+endif
 
 define compile
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -c $(1) -o $(2)

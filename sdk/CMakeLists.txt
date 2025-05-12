@@ -23,6 +23,25 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 find_package(RVTOOLCHAIN)
 
+
+if(NOT DEFINED SDK_DEFAULT_C_COMPILER)
+  set(SDK_DEFAULT_C_COMPILER gcc)
+  set(CMAKE_C_COMPILER ${RISCV-GCC})
+else()
+  if (SDK_DEFAULT_C_COMPILER STREQUAL "clang")
+    find_package(LLVMTools)
+    if (NOT LLVM_TOOLS_FOUND)
+      message(FATAL_ERROR "clang is specified for C compiler but not found")
+    endif()
+    set(CMAKE_C_COMPILER ${LLVM_CLANG})
+  elseif (SDK_DEFAULT_C_COMPILER STREQUAL "gcc")
+    set(CMAKE_C_COMPILER ${RISCV-GCC})
+  else()
+    message(FATAL_ERROR "Unknown C compiler: ${SDK_DEFAULT_C_COMPILER}")
+  endif()
+endif()
+
+
 include(GNUInstallDirs)
 
 # check SDK_BUILD_TARGET

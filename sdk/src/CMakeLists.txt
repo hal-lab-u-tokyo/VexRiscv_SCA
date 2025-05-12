@@ -1,4 +1,4 @@
-set(CMAKE_C_COMPILER ${RISCV-GCC})
+set(CMAKE_ASM_COMPILER ${RISCV-GCC})
 
 # add definitions depending on the target
 if (SDK_BUILD_TARGET STREQUAL "SAKURA-X")
@@ -45,8 +45,22 @@ set ( GCC_OPTS
 	"-g0"
 	"-O2"
 )
+set (CLANG_OPTS
+	"-target"
+	"riscv32"
+	"-march=rv32im"
+	"-mabi=ilp32"
+	"-static"
+	"-fno-builtin"
+	"-g0"
+	"-O2"
+)
 
-target_compile_options(minilib PRIVATE ${GCC_OPTS})
+if (SDK_DEFAULT_C_COMPILER STREQUAL "clang")
+	target_compile_options(minilib PRIVATE ${CLANG_OPTS})
+else()
+	target_compile_options(minilib PRIVATE ${GCC_OPTS})
+endif()
 
 enable_language(ASM)
 # start up routine
