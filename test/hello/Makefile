@@ -3,6 +3,6 @@ all: hello.elf
 
 OPT_LEVEL = -O2
 clean:
-	-rm -f *.{o,elf,disasm}
+	-$(RM) *.o *.elf *.disasm
 include  ${SDK_DIR}/etc/Makefile.common
 

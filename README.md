@@ -266,7 +266,7 @@ Please create a c source file app_name.c and Makefile as follows.
 all: app_name.elf
 
 clean:
-	-rm -f *.{o,elf,disasm}
+	-$(RM) *.o *.elf *.disasm
 include  ${SDK_DIR}/etc/Makefile.common
 ```
 
